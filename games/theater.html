@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мини-кинотеатр</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* === Сброс стилей и базовая типографика === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+        html, body {
+            height: 100%;
+            background: linear-gradient(120deg, #3d3b3b, #0c1113);
+            color: white;
+            overflow-x: hidden;
+        }
+        /* === Контейнер для выбора настроения === */
+        .mood-selector-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .mood-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .mood-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .mood-btn {
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .mood-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        /* === Контейнер для отображения фильма === */
+        .movie-display-container {
+            display: none; /* Скрыт по умолчанию */
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .movie-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .movie-poster {
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .movie-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .movie-year {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.5rem;
+        }
+        .movie-rating {
+            font-size: 1rem;
+            color: #ffd700; /* Жёлтый цвет для звёзд */
+            margin-bottom: 1rem;
+        }
+        .movie-description {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .movie-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+        .watch-later-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .watch-later-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .watch-now-btn {
+            background: #6a5acd;
+            border: none;
+            color: white;
+        }
+        .watch-now-btn:hover {
+            background: #5a4abb;
+        }
+        .another-btn {
+            background: rgba(106, 90, 205, 0.2);
+            border: 1px solid rgba(106, 90, 205, 0.4);
+            color: white;
+        }
+        .another-btn:hover {
+            background: rgba(106, 90, 205, 0.3);
+        }
+        .back-to-mood-btn {
+            margin-top: 1rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .back-to-mood-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        /* === Навигация === */
+        nav.navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+        .nav-center {
+            display: flex;
+            align-items: center;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 2rem;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: white;
+        }
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: white;
+            border-radius: 1px;
+        }
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        .auth-btn {
+            text-decoration: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .login-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .signup-btn {
+            background: #6a5acd;
+            color: white;
+            border: none;
+        }
+        .signup-btn:hover {
+            background: #5a4abb;
+        }
+        .menu-toggle {
+            display: none;
+        }
+        /* === Адаптация под мобильные устройства === */
+        @media (max-width: 768px) {
+            .mood-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .mood-btn {
+                width: 80%;
+                max-width: 300px;
+            }
+            .movie-poster {
+                width: 150px;
+                height: 225px;
+            }
+            .movie-card {
+                padding: 1.5rem;
+            }
+            .movie-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .action-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            nav.navbar .nav-container {
+                padding: 0 1rem;
+            }
+            nav.navbar .logo {
+                font-size: 1rem;
+            }
+            nav.navbar .logo-icon {
+                width: 24px;
+                height: 24px;
+            }
+            nav.navbar .nav-center {
+                display: none;
+            }
+            nav.navbar .auth-buttons {
+                display: none;
+            }
+            nav.navbar .menu-toggle {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация (как в меню.txt) -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="logo"><img src="images/6.png" alt="Логотип" class="logo-icon"> Назад</a>
+            <div class="nav-center">
+                <ul class="nav-links">
+                    <li><a href="../index.html">Главная</a></li>
+                    <li><a href="../index.html">Игры</a></li>
+                    <li><a href="#" class="active">Кинотеатр</a></li>
+                    <li><a href="#">Профиль</a></li>
+                    <li><a href="#">Настройки</a></li>
+                </ul>
+            </div>
+            <div class="auth-buttons">
+                <a href="#" class="auth-btn login-btn">Войти</a>
+                <a href="#" class="auth-btn signup-btn">Регистрация</a>
+            </div>
+            <button class="menu-toggle">☰</button>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <div class="mood-selector-container" id="moodSelector">
+        <h1 class="mood-title">Выбери настроение для просмотра</h1>
+        <div class="mood-buttons">
+            <button class="mood-btn" data-mood="лёгкий">Лёгкое</button>
+            <button class="mood-btn" data-mood="романтика">Романтика</button>
+            <button class="mood-btn" data-mood="боевик">Боевик</button>
+            <button class="mood-btn" data-mood="аниме">Аниме</button>
+            <button class="mood-btn" data-mood="для мозга">Для мозга</button>
+        </div>
+    </div>
+
+    <div class="movie-display-container" id="movieDisplay">
+        <div class="movie-card">
+            <img src="" alt="Постер фильма" class="movie-poster" id="moviePoster">
+            <h2 class="movie-title" id="movieTitle">Заголовок</h2>
+            <p class="movie-year" id="movieYear">Год</p>
+            <p class="movie-rating" id="movieRating">Рейтинг</p>
+            <p class="movie-description" id="movieDescription">Описание</p>
+            <div class="movie-actions">
+                <button class="action-btn watch-later-btn" id="watchLaterBtn">
+                    <i class="fas fa-bookmark"></i> Смотреть позже
+                </button>
+                <button class="action-btn watch-now-btn" id="watchNowBtn">
+                    <i class="fas fa-play"></i> Поехали!
+                </button>
+                <button class="action-btn another-btn" id="anotherBtn">
+                    <i class="fas fa-random"></i> Другой!
+                </button>
+            </div>
+            <button class="back-to-mood-btn" id="backToMoodBtn">← Выбрать другое настроение</button>
+        </div>
+    </div>
+
+    <script>
+        // === Данные о фильмах ===
+        const movies = {
+            "лёгкий": [
+                {
+                    title: "Красотка",
+                    year: 1990,
+                    rating: "7.0",
+                    description: "Классическая романтическая комедия о встрече богатого бизнесмена и проститутки. Легкий, добрый и трогательный фильм.",
+                    poster: "https://via.placeholder.com/200x300/333333/FFFFFF?text=Красотка" // Заглушка
+                },
+                {
+                    title: "Мстители",
+                    year: 2012,
+                    rating: "8.0",
+                    description: "Боевик с кучей взрывов и супергероев. Отличный выбор для вечеринки или когда хочется экшена.",
+                    poster: "https://via.placeholder.com/200x300/333333/FFFFFF?text=Мстители"
+                },
+                {
+                    title: "Третий лишний",
+                    year: 2003,
+                    rating: "7.2",
+                    description: "Очень смешная комедия о двух аферистах, оказавшихся в затруднительной ситуации. Лёгкий и забавный фильм.",
+                    poster: "https://via.placeholder.com/200x300/333333/FFFFFF?text=Третий+лишний"
+                }
+            ],
+            "романтика": [
+                {
+                    title: "Дневник памяти",
+                    year: 2004,
+                    rating: "7.9",
+                    description: "Трогательная история любви, проверенной временем и болезнью. Классика жанра.",
+                    poster: "https://via.placeholder.com/200x300/333333/FFFFFF?text=Дневник+памяти"
+                },
+                {
+                    title: "Ла-ла Ленд",
+                    year: 2016,
+                    rating: "8.0",
+                    description: "Музыкальная драма о любви и мечтах. Великолепная визуальная подача и музыка.",
+                    poster: "https://via.placeholder.com/200x300/333333/FFFFFF?text=Ла-ла+Ленд"
+                }
+            ],
+            "боевик": [
+                {
+                    title: "Матрица",
+                    year: 1999,
+                    rating: "8.7",
+                    description: "Классика жанра о реальности и иллюзии. Отличный сюжет, эффектные сцены боя и визуальные эффекты.",
+                    poster: "https://via.placeholder.com/200x300/333333/FFFFFF?text=Матрица"
+                },
+                {
+                    title: "Джон Уик",
+                    year: 2014,
+                    rating: "7.4",
+                    description: "Стильный и динамичный боевик о мстительном убийце. Минимум слов, максимум действия.",
+                    poster: "https://via.placeholder.com/200x300/333333/FFFFFF?text=Джон+Уик"
+                }
+            ],
+            "аниме": [
+                {
+                    title: "Унесённые призраками",
+                    year: 2001,
+                    rating: "8.6",
+                    description: "Шедевр Хаяо Миядзаки. Волшебная история о девочке, попавшей в мир духов.",
+                    poster: "https://via.placeholder.com/200x300/333333/FFFFFF?text=Унесённые+призраками"
+                },
+                {
+                    title: "Твоё имя",
+                    year: 2016,
+                    rating: "8.4",
+                    description: "Красивая и трогательная история о подростках, тела которых меняются местами.",
+                    poster: "https://via.placeholder.com/200x300/333333/FFFFFF?text=Твоё+имя"
+                }
+            ],
+            "для мозга": [
+                {
+                    title: "Начало",
+                    year: 2010,
+                    rating: "8.8",
+                    description: "Фильм о проникновении в мир сновидений. Сложный сюжет, требующий внимательности.",
+                    poster: "https://via.placeholder.com/200x300/333333/FFFFFF?text=Начало"
+                },
+                {
+                    title: "Интерстеллар",
+                    year: 2014,
+                    rating: "8.6",
+                    description: "Научная фантастика о путешествиях между звёздами и спасении человечества. Глубокая и визуально потрясающая картина.",
+                    poster: "https://via.placeholder.com/200x300/333333/FFFFFF?text=Интерстеллар"
+                }
+            ]
+        };
+
+        // === Элементы DOM ===
+        const moodSelector = document.getElementById('moodSelector');
+        const movieDisplay = document.getElementById('movieDisplay');
+        const moodButtons = document.querySelectorAll('.mood-btn');
+        const moviePoster = document.getElementById('moviePoster');
+        const movieTitle = document.getElementById('movieTitle');
+        const movieYear = document.getElementById('movieYear');
+        const movieRating = document.getElementById('movieRating');
+        const movieDescription = document.getElementById('movieDescription');
+        const watchLaterBtn = document.getElementById('watchLaterBtn');
+        const watchNowBtn = document.getElementById('watchNowBtn');
+        const anotherBtn = document.getElementById('anotherBtn');
+        const backToMoodBtn = document.getElementById('backToMoodBtn');
+
+        // === Текущий выбранный фильм ===
+        let currentMovie = null;
+
+        // === Функция для получения случайного фильма из категории ===
+        function getRandomMovie(mood) {
+            const moodMovies = movies[mood];
+            if (!moodMovies || moodMovies.length === 0) {
+                return null;
+            }
+            const randomIndex = Math.floor(Math.random() * moodMovies.length);
+            return { ...moodMovies[randomIndex], mood: mood }; // Возвращаем копию и добавляем настроение
+        }
+
+        // === Функция для отображения фильма ===
+        function displayMovie(movie) {
+            if (!movie) return;
+            currentMovie = movie;
+            moviePoster.src = movie.poster;
+            moviePoster.alt = movie.title;
+            movieTitle.textContent = movie.title;
+            movieYear.textContent = movie.year;
+            movieRating.textContent = `Рейтинг: ${movie.rating}`;
+            movieDescription.textContent = movie.description;
+            moodSelector.style.display = 'none';
+            movieDisplay.style.display = 'flex';
+        }
+
+        // === Обработчики событий для кнопок настроений ===
+        moodButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const mood = button.dataset.mood;
+                const movie = getRandomMovie(mood);
+                if (movie) {
+                    displayMovie(movie);
+                } else {
+                    alert("К сожалению, в этой категории пока нет фильмов.");
+                }
+            });
+        });
+
+        // === Обработчик кнопки "Смотреть позже" ===
+        watchLaterBtn.addEventListener('click', () => {
+            if (currentMovie) {
+                let watchLaterList = JSON.parse(localStorage.getItem('watchLaterList')) || [];
+                // Проверяем, нет ли уже этого фильма в списке
+                const exists = watchLaterList.some(item => item.title === currentMovie.title && item.mood === currentMovie.mood);
+                if (!exists) {
+                    watchLaterList.push(currentMovie);
+                    localStorage.setItem('watchLaterList', JSON.stringify(watchLaterList));
+                    alert(`"${currentMovie.title}" добавлен в список "Смотреть позже"!`);
+                } else {
+                    alert(`"${currentMovie.title}" уже есть в списке "Смотреть позже".`);
+                }
+            }
+        });
+
+        // === Обработчик кнопки "Поехали!" ===
+        watchNowBtn.addEventListener('click', () => {
+            if (currentMovie) {
+                alert(`Приятного просмотра "${currentMovie.title}"!`);
+                // Здесь можно добавить логику, например, отметку "просмотрено" в localStorage
+            }
+        });
+
+        // === Обработчик кнопки "Другой!" ===
+        anotherBtn.addEventListener('click', () => {
+            if (currentMovie) {
+                const movie = getRandomMovie(currentMovie.mood); // Берём новый фильм из той же категории
+                if (movie) {
+                    displayMovie(movie);
+                }
+            }
+        });
+
+        // === Обработчик кнопки "Назад к настроениям" ===
+        backToMoodBtn.addEventListener('click', () => {
+            movieDisplay.style.display = 'none';
+            moodSelector.style.display = 'flex';
+            currentMovie = null; // Сбрасываем текущий фильм
+        });
+
+        // === Обработчик для кнопки "Назад" в навигации (опционально) ===
+        // window.addEventListener('popstate', function(event) {
+        //     // Можно реализовать логику возврата, если используется pushState
+        //     // Пока просто игнорируем
+        // });
+    </script>
+</body>
+</html>
