@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комната игр</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Подключаем шрифт для самурая -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        /* === Стили для загрузки из loading.txt === */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000; /* Чёрный фон */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Очень высокий z-index, чтобы перекрыть всё */
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loading-container {
+            width: 200px;
+            height: 100px;
+            padding-top: 100px; /* Отступ сверху */
+            text-align: center; /* Центрируем текст */
+        }
+        .loading-ball {
+            width: 10px;
+            height: 10px;
+            margin: 10px auto;
+            border-radius: 50px;
+            background: #ffffff; /* Белый цвет шариков */
+        }
+        .loading-ball:nth-child(1) {
+            -webkit-animation: right 1s infinite ease-in-out;
+            -moz-animation: right 1s infinite ease-in-out;
+            animation: right 1s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(2) {
+            -webkit-animation: left 1.1s infinite ease-in-out;
+            -moz-animation: left 1.1s infinite ease-in-out;
+            animation: left 1.1s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(3) {
+            -webkit-animation: right 1.05s infinite ease-in-out;
+            -moz-animation: right 1.05s infinite ease-in-out;
+            animation: right 1.05s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(4) {
+            -webkit-animation: left 1.15s infinite ease-in-out;
+            -moz-animation: left 1.15s infinite ease-in-out;
+            animation: left 1.15s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(5) {
+            -webkit-animation: right 1.1s infinite ease-in-out;
+            -moz-animation: right 1.1s infinite ease-in-out;
+            animation: right 1.1s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(6) {
+            -webkit-animation: left 1.05s infinite ease-in-out;
+            -moz-animation: left 1.05s infinite ease-in-out;
+            animation: left 1.05s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(7) {
+            -webkit-animation: right 1s infinite ease-in-out;
+            -moz-animation: right 1s infinite ease-in-out;
+            animation: right 1s infinite ease-in-out;
+        }
+        /* === Добавляем стили для текста "Загрузка..." === */
+        .loading-text {
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif; /* Используем основной шрифт */
+            font-size: 1.2rem;
+            margin-top: 20px; /* Отступ сверху от шариков */
+            letter-spacing: 2px; /* Небольшой межбуквенный интервал */
+        }
+        @-webkit-keyframes right {
+            0% { -webkit-transform: translate(-15px); }
+            50% { -webkit-transform: translate(15px); }
+            100% { -webkit-transform: translate(-15px); }
+        }
+        @-webkit-keyframes left {
+            0% { -webkit-transform: translate(15px); }
+            50% { -webkit-transform: translate(-15px); }
+            100% { -webkit-transform: translate(15px); }
+        }
+        @-moz-keyframes right {
+            0% { -moz-transform: translate(-15px); }
+            50% { -moz-transform: translate(15px); }
+            100% { -moz-transform: translate(-15px); }
+        }
+        @-moz-keyframes left {
+            0% { -moz-transform: translate(15px); }
+            50% { -moz-transform: translate(-15px); }
+            100% { -moz-transform: translate(15px); }
+        }
+        @keyframes right {
+            0% { transform: translate(-15px); }
+            50% { transform: translate(15px); }
+            100% { transform: translate(-15px); }
+        }
+        @keyframes left {
+            0% { transform: translate(15px); }
+            50% { transform: translate(-15px); }
+            100% { transform: translate(15px); }
+        }
+        /* === Конец стилей загрузки === */
+        /* === Стили для самурая (оставлены как есть) === */
+        .samurai-container {
+            position: relative;
+            height: 300px; /* Высота контейнера для самурая */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .samurai {
+            position: relative; /* Меняем на relative, чтобы самурай был в потоке */
+            width: 96px;
+            height: 96px;
+            background-image: url('https://assets.codepen.io/97137/s__IDLE.png');
+            background-repeat: no-repeat;
+            image-rendering: pixelated;
+            transform: scale(4);
+            overflow: hidden;
+            background-size: auto; /* Убираем фиксированную ширину */
+        }
+        .samurai.idle {
+            background-image: url('https://assets.codepen.io/97137/s__IDLE.png');
+            animation: idle 1s steps(10, end) infinite;
+        }
+        .samurai.run {
+            background-image: url('https://assets.codepen.io/97137/s_RUN.png');
+            animation: run 1s steps(16) infinite;
+        }
+        .samurai.attack {
+            background-image: url('https://assets.codepen.io/97137/s__ATTACK+1.png');
+            animation: attack 0.35s steps(7, end) infinite;
+        }
+        @keyframes idle {
+            0% { background-position-x: 0; }
+            100% { background-position-x: -960px; }
+        }
+        @keyframes run {
+            0% { background-position-x: 0; }
+            100% { background-position-x: -1536px; }
+        }
+        @keyframes attack {
+            0% { background-position-x: 0; }
+            100% { background-position-x: -672px; }
+        }
+        /* === Конец стилей самурая === */
+        /* === Таблица рекордов (из предыдущего обновления) === */
+        .leaderboard-table {
+            width: 100%;
+            max-width: 500px; /* Ограничиваем ширину */
+            margin: 20px auto; /* Центрируем */
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .leaderboard-header {
+            background: rgba(255, 255, 255, 0.15); /* Slightly more opaque background for header */
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px;
+            font-weight: 600;
+            color: #ddd; /* Slightly lighter text for header */
+        }
+        .leaderboard-item {
+            background: rgba(255, 255, 255, 0.1); /* Slightly transparent background */
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 20px;
+            transition: background 0.3s ease;
+        }
+        .leaderboard-item:nth-child(2) { /* First place row */
+            background: rgba(255, 215, 0, 0.15); /* Gold tint for first place */
+        }
+        .leaderboard-item:nth-child(3) { /* Second place row */
+            background: rgba(200, 200, 200, 0.15); /* Silver tint for second place */
+        }
+        .leaderboard-item:hover {
+            background: rgba(255, 255, 255, 0.2); /* Highlight on hover */
+        }
+        .leaderboard-place,
+        .leaderboard-name,
+        .leaderboard-score {
+            flex: 1;
+            text-align: center;
+        }
+        /* === Конец таблицы рекордов === */
+    </style>
+</head>
+<body>
+    <!-- Экран загрузки -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-container">
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <!-- === Добавляем текст "Загрузка..." === -->
+            <div class="loading-text">Загрузка...</div>
+            <!-- === Конец текста === -->
+        </div>
+    </div>
+    <!-- Плавающий navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <!-- === Пасхалка: слово "Лиза?" ведёт на lisa.html === -->
+            <a href="games/secret.html" class="logo"><img src="images/6.png" alt="Фото 6" class="logo-icon"> Лиза?</a>
+            <!-- === Конец пасхалки === -->
+            <div class="nav-center">
+                <ul class="nav-links">
+                    <li><a href="#home" class="active">Главная</a></li>
+                    <li><a href="#games">Игры</a></li>
+                    <li><a href="#leaderboard">Рекорды</a></li>
+                    <li><a href="#profile">Профиль</a></li>
+                    <li><a href="#settings">Настройки</a></li>
+                </ul>
+            </div>
+            <div class="auth-buttons">
+                <a href="error.html" class="auth-btn login-btn">пустышка</a>
+                <a href="error.html" class="auth-btn signup-btn">не работает</a>
+            </div>
+            <button class="menu-toggle">☰</button>
+            <div class="mobile-auth-buttons">
+                <a href="error.html" class="auth-btn login-btn">пустышка</a>
+                <a href="error.html" class="auth-btn signup-btn">не работает</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Секции -->
+    <section id="home" class="section">
+        <div class="section-content">
+            <h1><img src="images/1.png" alt="Фото 1" class="section-icon"> Здраствуй!</h1>
+            <p class="section-info">Вверху там все самое важное, клацай куда хочешь</p>
+        </div>
+    </section>
+    <section id="games" class="section">
+        <div class="section-content">
+            <h1><img src="images/3.png" alt="Фото 3" class="section-icon"> Игры</h1>
+            <p class="section-info">Выбери свою игру и начни играть, а то что сидеть</p>
+            <div class="game-grid">
+                <a href="games/fifteen.html" class="game-card">Пятнашки</a>
+                <a href="games/minesweeper.html" class="game-card">Сапёр</a>
+                <a href="#" class="game-card">Слова за минуту</a>
+                <a href="games/music.html" class="game-card">Виселица(музыка)</a>
+                <a href="#" class="game-card">Memory Drawing</a>
+                <a href="#" class="game-card">Pixel Art Creator</a>
+            </div>
+        </div>
+    </section>
+    <section id="leaderboard" class="section">
+        <div class="section-content">
+            <h1><img src="images/4.png" alt="Фото 4" class="section-icon"> Рекорды</h1>
+            <p class="section-info">Ну тут понятно что я самый  крутой, да?</p>
+            <div class="leaderboard-table">
+                <div class="leaderboard-header">
+                    <span class="leaderboard-place">Место</span>
+                    <span class="leaderboard-name">Имя</span>
+                    <span class="leaderboard-score">Очки</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-place">🥇 1</span>
+                    <span class="leaderboard-name">Лиза</span>
+                    <span class="leaderboard-score">3069</span>
+                </div>
+                <div class="leaderboard-item">
+                    <span class="leaderboard-place">🥈 2</span>
+                    <span class="leaderboard-name">Дима</span>
+                    <span class="leaderboard-score">2969</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="profile" class="section">
+        <div class="section-content">
+            <h1><img src="images/2.png" alt="Фото 2" class="section-icon"> Лиза</h1>
+            <p class="section-info">Это все тестовый формат, давай представим что ты тут самая крутая в очках, как котик, который здесь: <a href="games/room.html" class="clickable-text">Ну тыкни</a>🙃</p>
+        </div>
+    </section>
+    <section id="settings" class="section">
+        <div class="section-content">
+            <h1><img src="images/5.png" alt="Фото 5" class="section-icon"> Настройки</h1>
+            <p class="section-info">Здесь типо какие то настройки, но оно тебе не нужно, поэтому просто смотрим на самурая</p>
+            <!-- Контейнер для самурая -->
+            <div class="samurai-container">
+                <div class="samurai idle" id="samurai"></div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <p>&copy; Здесь должно быть что то важное, но я и так типо важный</p>
+            </div>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+    <script>
+        // === Скрипт самурая ===
+        // Встроим JS самурая прямо в index.html
+        window.addEventListener("load", function (ev) {
+            const samurai = document.getElementById("samurai"); // Находим элемент по ID
+            let classes = null;
+            let keys = {};
+            const removeClasses = () => {
+                classes.forEach((classe) => {
+                    if (classe !== "samurai" && classe !== "idle") { // Не удаляем 'idle', чтобы был базовый класс
+                        samurai.classList.remove(classe);
+                    }
+                });
+            };
+            const setIdle = () => {
+                removeClasses();
+                if (!samurai.classList.contains("idle")) {
+                    samurai.classList.add("idle");
+                }
+            };
+            window.addEventListener("keydown", function (ev) {
+                classes = Array.from(samurai.classList);
+                console.log("keydown");
+                removeClasses();
+                keys[ev.key] = true;
+                switch (ev.key) {
+                    case "d":
+                        samurai.style.transform = "scaleX(4) scaleY(4)";
+                        samurai.classList.add("run");
+                        break;
+                    case "a":
+                        samurai.style.transform = "scaleX(-4) scaleY(4)";
+                        samurai.classList.add("run");
+                        break;
+                    case "k":
+                        samurai.classList.add("attack");
+                        break; // Добавим break для 'k' тоже
+                }
+            });
+            window.addEventListener("keyup", function (ev) {
+                keys[ev.key] = false;
+                setIdle();
+            });
+            // Проверяем, отжаты ли все клавиши
+            setInterval(() => {
+                if (!keys["a"] && !keys["d"] && !keys["k"]) {
+                    setIdle();
+                }
+            }, 100);
+        });
+        // === Конец скрипта самурая ===
+        // === Скрипт для загрузки ===
+        document.addEventListener('DOMContentLoaded', function () {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            // Через 3 секунды скрываем загрузку
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 3000); // 3000 миллисекунд = 3 секунды
+        });
+    </script>
+</body>
+</html>

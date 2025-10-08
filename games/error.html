@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ОКАК</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .app {
+            position: relative;
+            height: 100svh;
+            background: #050505;
+            overflow: hidden;
+            font-family: "Montserrat", sans-serif;
+            color: #fff;
+            font-size: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .error {
+            font-size: 750px;
+            font-weight: 900;
+            margin-bottom: 20px; /* Отступ между 404 и кнопкой */
+            z-index: 1; /* Помещаем 404 за изображением */
+            position: relative; /* Добавлено для корректной работы z-index */
+        }
+        .back-button {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            z-index: 10; /* Повысим z-index, чтобы кнопка была поверх всего */
+            position: absolute; /* Используем absolute для позиционирования */
+            bottom: 100px; /* Подвинули кнопку выше */
+            left: 50%;
+            transform: translateX(-50%); /* Центрируем кнопку по горизонтали */
+        }
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-50%) translateY(-1px); /* Центрирование сохраняется при hover */
+        }
+        .img {
+            position: absolute;
+            bottom: 0;
+            max-width: 1920px;
+            margin: 0 auto;
+            animation: catAnim 1.5s ease forwards;
+            z-index: 2; /* Повышаем z-index, чтобы изображение было поверх 404 */
+        }
+        .img img {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        @keyframes catAnim {
+            0% {
+                translate: 0 50%;
+            }
+            100% {
+                translate: 0 0;
+            }
+        }
+        .okak {
+            position: absolute;
+            bottom: 150px;
+            left: 50%;
+            translate: -50% 0;
+            font-weight: 900;
+            font-size: 115px;
+            z-index: 3; /* Повысим z-index, чтобы текст был поверх изображения */
+        }
+        @keyframes errorAnim {
+            100% {
+                transform: translate(-50%, -400px);
+            }
+        }
+        /* Мобильная адаптация */
+        @media (max-width: 768px) {
+            .error {
+                font-size: 40vw; /* Используем vw для адаптивности */
+                margin-bottom: 15px;
+            }
+            .okak {
+                font-size: 8vw; /* Используем vw для адаптивности */
+                bottom: 100px; /* Смещаем текст выше */
+            }
+            .back-button {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+                bottom: 80px; /* Подвинули кнопку выше на мобильных */
+            }
+        }
+        @media (max-width: 480px) {
+            .error {
+                font-size: 50vw;
+            }
+            .okak {
+                font-size: 10vw;
+                bottom: 80px;
+            }
+            .back-button {
+                padding: 6px 12px;
+                font-size: 0.7rem;
+                bottom: 70px; /* Подвинули кнопку выше на маленьких экранах */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <div class="error">
+            404
+        </div>
+        <div class="img">
+            <img src="../img/cat.png" alt="cat"> <!-- Исправленный путь -->
+            <h1 class="okak">ОКАК</h1>
+        </div>
+        <a href="../index.html" class="back-button">← Назад</a> <!-- Кнопка "Назад" -->
+    </div>
+</body>
+</html>

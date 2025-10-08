@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пятнашечки</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* === Стили для загрузки из loading.txt === */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000; /* Чёрный фон */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Очень высокий z-index, чтобы перекрыть всё */
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        .loading-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .loading-container {
+            width: 200px;
+            height: 100px;
+            padding-top: 100px; /* Отступ сверху */
+            text-align: center; /* Центрируем текст */
+        }
+        .loading-ball {
+            width: 10px;
+            height: 10px;
+            margin: 10px auto;
+            border-radius: 50px;
+            background: #ffffff; /* Белый цвет шариков */
+        }
+        .loading-ball:nth-child(1) {
+            -webkit-animation: right 1s infinite ease-in-out;
+            -moz-animation: right 1s infinite ease-in-out;
+            animation: right 1s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(2) {
+            -webkit-animation: left 1.1s infinite ease-in-out;
+            -moz-animation: left 1.1s infinite ease-in-out;
+            animation: left 1.1s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(3) {
+            -webkit-animation: right 1.05s infinite ease-in-out;
+            -moz-animation: right 1.05s infinite ease-in-out;
+            animation: right 1.05s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(4) {
+            -webkit-animation: left 1.15s infinite ease-in-out;
+            -moz-animation: left 1.15s infinite ease-in-out;
+            animation: left 1.15s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(5) {
+            -webkit-animation: right 1.1s infinite ease-in-out;
+            -moz-animation: right 1.1s infinite ease-in-out;
+            animation: right 1.1s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(6) {
+            -webkit-animation: left 1.05s infinite ease-in-out;
+            -moz-animation: left 1.05s infinite ease-in-out;
+            animation: left 1.05s infinite ease-in-out;
+        }
+        .loading-ball:nth-child(7) {
+            -webkit-animation: right 1s infinite ease-in-out;
+            -moz-animation: right 1s infinite ease-in-out;
+            animation: right 1s infinite ease-in-out;
+        }
+        /* === Добавляем стили для текста "Загрузка..." === */
+        .loading-text {
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif; /* Используем основной шрифт */
+            font-size: 1.2rem;
+            margin-top: 20px; /* Отступ сверху от шариков */
+            letter-spacing: 2px; /* Небольшой межбуквенный интервал */
+        }
+        @-webkit-keyframes right {
+            0% { -webkit-transform: translate(-15px); }
+            50% { -webkit-transform: translate(15px); }
+            100% { -webkit-transform: translate(-15px); }
+        }
+        @-webkit-keyframes left {
+            0% { -webkit-transform: translate(15px); }
+            50% { -webkit-transform: translate(-15px); }
+            100% { -webkit-transform: translate(15px); }
+        }
+        @-moz-keyframes right {
+            0% { -moz-transform: translate(-15px); }
+            50% { -moz-transform: translate(15px); }
+            100% { -moz-transform: translate(-15px); }
+        }
+        @-moz-keyframes left {
+            0% { -moz-transform: translate(15px); }
+            50% { -moz-transform: translate(-15px); }
+            100% { -moz-transform: translate(15px); }
+        }
+        @keyframes right {
+            0% { transform: translate(-15px); }
+            50% { transform: translate(15px); }
+            100% { transform: translate(-15px); }
+        }
+        @keyframes left {
+            0% { transform: translate(15px); }
+            50% { transform: translate(-15px); }
+            100% { transform: translate(15px); }
+        }
+        /* === Конец стилей загрузки === */
+
+        /* === Стили из "Пятнашки.txt" === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(1deg, #000000, #575757);
+            /* Убираем общий фон body, он будет за canvas */
+            /* background: linear-gradient(1deg, #000000, #1f1e1e); */ /* Убираем, так как фон будет на canvas */
+            transition: background 1s ease;
+        }
+        .wrap {
+            width: 90%;
+            max-width: 900px;
+            height: 600px;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(88, 88, 88, 0.6);
+            /* === Изменяем фон wrap, чтобы он был похож на стиль главного меню === */
+            /* Убираем градиент, он будет на canvas */
+            background: #000000; /* Оставляем тёмный фон, но можно добавить градиент, как в главном меню */
+            transition: background 1s ease;
+        }
+        /* === Добавляем градиентный фон для canvas, как в главном меню === */
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            /* Применяем градиент, как в главном меню, но в обратном порядке или схожий */
+            /* background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); */
+            /* Убираем фон у canvas, градиент будет в JS */
+        }
+        .caption {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 6px 10px;
+            border-radius: 6px;
+            color: #b9b9b9;
+        }
+/* === Стили для игры "Пятнашки" === */
+.game-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10; /* Увеличиваем z-index, чтобы элементы были поверх canvas */
+    width: 100%;
+    padding: 2rem;
+}
+.game-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #6a5acd, #12001f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 10px rgba(106, 90, 205, 0.5);
+}
+#puzzle-container {
+    position: relative; /* Делаем относительным, чтобы плитки позиционировались внутри */
+    width: 325px;
+    height: 325px;
+    margin: 2rem auto;
+    /* === Чёрная рамка с сиянием === */
+    border: 8px solid #000;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(92, 92, 92, 0.5);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 4px;
+    z-index: 20; /* Выше, чем canvas, но ниже, чем game-container */
+}
+/* Убираем стили для dark-theme, так как их больше нет */
+#puzzle-container span {
+    position: absolute; /* Плитки позиционируются абсолютно внутри контейнера */
+    display: block;
+    width: 80px;
+    height: 80px;
+    border-radius: 4px;
+}
+/* === Чёрные кубики с градиентом === */
+#puzzle-container span.number {
+    cursor: pointer;
+    font: bold 36px/80px Arial;
+    text-align: center;
+    text-shadow: -1px -1px 0 rgba(0,0,0, 0.5);
+    color: #fff;
+    user-select: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* === Чёрный градиент === */
+    /* background: linear-gradient(135deg, #000, #111); */
+    background: linear-gradient(135deg, #1d1d1d, #000000); /* Обновлённый градиент */
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); */
+    box-shadow: 0 4px 8px rgba(19, 19, 19, 0.3); /* Обновлённая тень */
+}
+#puzzle-container span.number:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+/* === Пустая ячейка === */
+#puzzle-container span.empty {
+    background: transparent;
+    /* === Видимая рамка для пустой ячейки === */
+    border: 2px dashed #2f4c75;
+    border-radius: 4px;
+    cursor: default;
+}
+/* === Анимация перемещения === */
+#puzzle-container.animate span {
+    transition: 0.15s left, 0.15s top;
+}
+/* === Кнопки управления === */
+.game-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+    z-index: 30; /* Выше остальных элементов */
+}
+.game-controls button {
+    background: linear-gradient(135deg, #6a5acd, #1e0133);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+.game-controls button:hover {
+    background: linear-gradient(135deg, #7b6be0, #1b0430);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+/* === Кнопка "Назад в меню" === */
+.back-btn {
+    background: linear-gradient(135deg, #6a5acd, #1e0c2b);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+.back-btn:hover {
+    background: linear-gradient(135deg, #261e58, #190030);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+/* === Адаптация под мобильные устройства === */
+@media (max-width: 768px) {
+    .wrap {
+        width: 95%;
+        height: auto;
+        min-height: 100vh;
+    }
+    .game-container {
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        padding: 1rem;
+    }
+    .game-container h1 {
+        font-size: 1.5rem;
+    }
+    #puzzle-container {
+        width: 245px;
+        height: 245px;
+    }
+    #puzzle-container span {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        line-height: 60px;
+    }
+    .game-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    .game-controls button {
+        width: 80%;
+        padding: 0.8rem;
+    }
+}
+/* === Стили для модального окна победы === */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Полупрозрачный чёрный фон */
+    backdrop-filter: blur(5px); /* Размытие фона */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Очень высокий z-index, чтобы перекрыть всё */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+.modal-content {
+    background: rgba(26, 26, 26, 0.9); /* Тёмный полупрозрачный фон */
+    backdrop-filter: blur(10px); /* Более сильное размытие внутри окна */
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Тень */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Тонкая обводка */
+    max-width: 90%;
+    width: 400px; /* Ширина окна */
+    transform: scale(0.9); /* Начальный масштаб */
+    transition: transform 0.3s ease;
+}
+.modal-overlay.show .modal-content {
+    transform: scale(1); /* Анимация появления */
+}
+.modal-content h2 {
+    font-size: 1.5rem; /* Уменьшил размер заголовка */
+    margin-bottom: 1rem;
+    color: #ffffff;
+    /* background: linear-gradient(135deg, #6a5acd, #12001f); */ /* Убираем градиент с заголовка */
+    /* -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 10px rgba(106, 90, 205, 0.5); */
+}
+.modal-content .victory-image {
+    width: 80px; /* Размер фото */
+    height: 80px;
+    margin: 0 auto 1rem; /* Отступ снизу */
+    display: block;
+    border-radius: 10px; /* Закругление углов фото */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5); /* Лёгкое сияние */
+}
+.modal-content p {
+    margin: 0.5rem 0; /* Отступы между текстом */
+    color: #ccc; /* Цвет текста */
+}
+.modal-buttons {
+    display: flex;
+    flex-direction: column; /* Кнопки в столбик */
+    gap: 1rem; /* Отступ между кнопками */
+    margin-top: 1.5rem;
+}
+.modal-buttons button {
+    background: linear-gradient(135deg, #6a5acd, #1e0133); /* Стиль кнопки как в игре */
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    width: 100%; /* Кнопки на всю ширину */
+}
+.modal-buttons button:hover {
+    background: linear-gradient(135deg, #7b6be0, #1b0430);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(2, 1, 1, 0.15);
+}
+/* === Конец стилей модального окна === */
+    </style>
+</head>
+<body>
+    <!-- Экран загрузки -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-container">
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <div class="loading-ball"></div>
+            <!-- === Добавляем текст "Загрузка..." === -->
+            <div class="loading-text">Загрузка...</div>
+            <!-- === Конец текста === -->
+        </div>
+    </div>
+
+    <!-- Основной контент игры -->
+    <div class="wrap" id="wrap">
+        <canvas id="c"></canvas>
+        <div class="caption">Что то на пятнашках</div>
+        <div class="game-container">
+            <button onclick="location.href='../index.html'" class="back-btn">← Пора домой</button>
+            <h1>Пятнашечки!</h1>
+            <div id="puzzle-container"></div>
+            <div class="game-controls">
+                <button id="solve">Соберем?</button>
+                <button id="scramble">Перемешаем?</button>
+            </div>
+        </div>
+    </div>
+    <!-- Модальное окно победы -->
+    <div class="modal-overlay" id="winModal">
+        <div class="modal-content">
+            <!-- <h2>🎉 Поздравляем!</h2> -->
+            <img src="../images/7.png" alt="Победа!" class="victory-image">
+            <h2>Умничка!</h2>
+            <p>На 100% уровен что ты все сделала честно!</p>
+            <div class="modal-buttons">
+                <button id="restartBtn">Еще гоу</button>
+                <button id="menuBtn">Пора в менюшку</button>
+            </div>
+        </div>
+    </div>
+    <!-- Звук победы -->
+    <audio id="victorySound" preload="auto">
+        <source src="../assets/sound.mp3" type="audio/mpeg">
+        <!-- Добавь другие форматы при необходимости -->
+        <!-- <source src="games/assets/victory-sound.ogg" type="audio/ogg"> -->
+        <!-- <source src="games/assets/victory-sound.wav" type="audio/wav"> -->
+        <!-- Резервный текст -->
+        Ваш браузер не поддерживает аудио.
+    </audio>
+    <!-- <script src="../js/main.js"></script> --> <!-- Убран -->
+    <!-- Подключаем canvas-confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <script src="fifteen.js"></script>
+    <script>
+        // === Скрипт для загрузки ===
+        document.addEventListener('DOMContentLoaded', function () {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            // Через 3 секунды скрываем загрузку
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+            }, 3000); // 3000 миллисекунд = 3 секунды
+        });
+    </script>
+</body>
+</html>

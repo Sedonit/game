@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Комната</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a0a; /* Темный фон, как в основном меню */
+            color: #ffffff;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+        .room-container {
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+        }
+        .room-image {
+            width: 100%;
+            max-width: 600px; /* Ограничиваем ширину */
+            height: auto; /* Сохраняем пропорции */
+            border-radius: 15px; /* Закругляем углы */
+            margin: 20px 0; /* Отступы сверху и снизу */
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5); /* Тень */
+            object-fit: cover; /* Обрезка изображения */
+        }
+        .room-text {
+            font-size: 2rem; /* Размер текста */
+            font-weight: 700; /* Жирность */
+            margin: 20px 0; /* Отступы */
+            color: #ffffff; /* Цвет текста */
+        }
+        .back-button {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1); /* Прозрачный фон */
+            backdrop-filter: blur(10px); /* Размытие фона */
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Обводка */
+            border-radius: 25px; /* Закругление */
+            color: white; /* Цвет текста */
+            text-decoration: none; /* Убираем подчеркивание */
+            font-weight: 500; /* Жирность */
+            font-size: 0.9rem; /* Размер шрифта */
+            transition: all 0.3s ease; /* Плавный переход */
+            display: inline-block; /* Позволяет центрировать */
+        }
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2); /* При наведении */
+            transform: translateY(-1px); /* Поднятие при наведении */
+        }
+        /* Стили для кликабельного текста */
+        .clickable-text {
+            color: #aaa; /* Серый цвет */
+            text-decoration: underline; /* Подчеркивание */
+            cursor: pointer; /* Курсор в виде руки */
+            transition: color 0.3s ease; /* Плавный переход цвета */
+        }
+        .clickable-text:hover {
+            color: #ffffff; /* Цвет при наведении */
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="room-container">
+        <!-- Подставь правильный путь к изображению -->
+        <img src="https://i.pinimg.com/736x/43/b5/a9/43b5a96da1b7144ca19e148cb39006c2.jpg" alt="Фото комнаты" class="room-image">
+        <div class="room-text">А вот и ты милашка!</div>
+        <!-- Кликабельный текст -->
+        <p class="section-info"> Правда ведь милашка, да??? Я долго искал фотографию так то! Целых минут 20 потратил, так что ценим! А так мы ведь знаем какая ты зайка и обояшка, поэтому что тут говорить.. я твой фанат так то!</p>
+        <a href="../index.html" class="back-button">← Обратно? </a>
+    </div>
+</body>
+</html>
