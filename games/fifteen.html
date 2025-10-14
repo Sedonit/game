@@ -113,7 +113,6 @@
             100% { transform: translate(15px); }
         }
         /* === Конец стилей загрузки === */
-
         /* === Стили из "Пятнашки.txt" === */
         * {
             margin: 0;
@@ -276,42 +275,7 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
-/* === Адаптация под мобильные устройства === */
-@media (max-width: 768px) {
-    .wrap {
-        width: 95%;
-        height: auto;
-        min-height: 100vh;
-    }
-    .game-container {
-        position: relative;
-        top: auto;
-        left: auto;
-        transform: none;
-        padding: 1rem;
-    }
-    .game-container h1 {
-        font-size: 1.5rem;
-    }
-    #puzzle-container {
-        width: 245px;
-        height: 245px;
-    }
-    #puzzle-container span {
-        width: 60px;
-        height: 60px;
-        font-size: 24px;
-        line-height: 60px;
-    }
-    .game-controls {
-        flex-direction: column;
-        align-items: center;
-    }
-    .game-controls button {
-        width: 80%;
-        padding: 0.8rem;
-    }
-}
+
 /* === Стили для модального окна победы === */
 .modal-overlay {
     position: fixed;
@@ -414,7 +378,6 @@
             <!-- === Конец текста === -->
         </div>
     </div>
-
     <!-- Основной контент игры -->
     <div class="wrap" id="wrap">
         <canvas id="c"></canvas>
@@ -459,7 +422,6 @@
         // === Скрипт для загрузки ===
         document.addEventListener('DOMContentLoaded', function () {
             const loadingOverlay = document.getElementById('loadingOverlay');
-
             // Через 3 секунды скрываем загрузку
             setTimeout(() => {
                 loadingOverlay.classList.add('hidden');
