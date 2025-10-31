@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Абсурдная история</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
+            color: #ccc;
+            font-family: 'Georgia', serif;
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            border-left: 4px solid #444;
+            border-right: 4px solid #444;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+            background-attachment: fixed;
+        }
+
+        .journal-entry {
+            background-color: rgba(30, 30, 30, 0.9);
+            padding: 40px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 0, 0, 0.5);
+            color: #ddd;
+            position: relative;
+            min-height: 60vh;
+        }
+
+        .date {
+            font-style: italic;
+            color: #888;
+            margin-bottom: 30px;
+            text-align: right;
+            font-size: 0.9em;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        p {
+            margin: 20px 0;
+            text-align: justify;
+        }
+
+        .ghost-word {
+            color: #ff9966;
+            font-weight: bold;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .ghost-word:hover {
+            text-shadow: 0 0 8px rgba(255, 153, 102, 0.7);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .nav-buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            background-color: #333;
+            color: #aaa;
+            border: 1px solid #555;
+            padding: 10px 20px;
+            font-family: 'Georgia', serif;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        button:hover {
+            background-color: #444;
+            color: #ccc;
+        }
+
+        button:disabled {
+            color: #555;
+            cursor: not-allowed;
+        }
+
+        .final-text {
+            font-style: italic;
+            color: #999;
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px dashed #555;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="journal-entry">
+    <div class="date">...</div>
+
+    <!-- Первая страница -->
+    <div id="page1" class="page">
+        <p>Комната, от которой <span class="ghost-word" id="word1">пот</span> падает на бетонный пол с воздухом, который не даёт полностью дышать грудью. На стене картина, и с картины словно упала чашка, которая в осколках осталась на полу. Всмотревшись получше, видно, что в осколке — дыра, а в ней — комната, та же комната, где и я. Только воздух гуще, и стены дышат быстрее. Я приседаю, приближаюсь к осколку. Мой палец касается края. Он тёплый. Живой. Из дыры доносится шёпот. Мой собственный. Он говорит: "Ты <span class="ghost-word" id="word2">опоздал</span>". Я отдергиваю руку. Осколок дрожит. В нём комната исчезает. Остаётся только отражение — моё лицо, но с закрытыми глазами. Я моргаю. В реальности мои глаза открыты. Кто-то за спиной тихо смеётся. Я не оборачиваюсь. Всё равно никого нет. Но смех продолжается. Он идёт из картины. Картина, с которой упала чашка. Я поднимаю голову. На картине — я. Я смотрю на меня. Мы оба не моргаем. Пот на моём лбу становится холодным.</p>
+        <p>Воздух в комнате вдруг перестаёт быть густым. Он исчезает. Я не дышу. Но не умираю. Просто стою. И смотрю, как я на картине поднимает руку. И машет. Я не машу в ответ. Я не могу. Мои руки — это не мои руки. Они — чьи-то. Чьи-то старые. С морщинами. Они держат чашку. Чашку из осколков. Из дыры. В чашке — дыра. В ней — комната. Где я. Снова. Или впервые. Или последний раз. Воздух возвращается. Резкий. Холодный. Я вдыхаю. Глубоко. Слишком. Меня выворачивает. На пол падает не пот. Это слёзы. Но я не плачу. Я не чувствую. Только смотрю. В чашку. В дыру. В комнату. Где я. Стою. У картины. Смеюсь. Тихо.</p>
+        <div class="nav-buttons">
+            <button id="prev-btn" disabled>Назад</button>
+            <button id="new-btn1" onclick="window.location.href='../index.html'">Домой</button>
+            <button id="next-btn">Следующая страница</button>
+        </div>
+    </div>
+
+    <!-- Вторая страница -->
+    <div id="page2" class="page">
+        <p>...Смеюсь. Тихо. Воздух снова густеет, он втягивает меня обратно в чашку, в дыру, в комнату, ту комнату, где я, где он, где я, где все. Я возвращаюсь к осколку, он в моей руке, он тёплый, живой, он — это я, я — это дыра, воздух внутри осколка — это воздух в комнате, я внутри себя, я выхожу из комнаты, но дверь — это окно, за окном — комната, та же, я внутри окна, я внутри картины, я внутри чашки, я внутри того, кто смотрит на картину, я — ты, ты — я, ты читаешь это, ты в комнате, ты в дыре, ты — я, ты смеёшься, тихо, ты — призрак, ты в дневнике, я — в твоём взгляде, ты — в моём, мы — дыра, ты закрываешь дневник, он исчезает, ты возвращаешься в реальность, но взгляд остаётся, твой, мой, его, ты не можешь вспомнить, где ты был, ты слышишь тихий смех, ты оборачиваешься, никого, ты всё ещё в комнате, с чашкой, в осколке, где я, смеюсь, тихо, ты — я, ты — призрак, я — в твоём взгляде, ты — в моём, мы — ничто и всё. Я закрываю глаза. Или ты. Или <span class="ghost-word" id="word3">он</span>. В комнате становится <i>слишком</i> тихо. Даже смех исчезает. Только <i>ощущение</i> смеха остаётся на языке. Воздух возвращается, <i>густой</i>, <i>холодный</i>, <i>неподвижный</i>. Я делаю шаг. Пол <i>хрустит</i>. Под ногами — <i>не пол</i>, это <span class="ghost-word" id="word4">стекло</span>, тонкое, <i>зеркальное</i>. Я смотрю вниз. <i>Моё</i> лицо смотрит вверх. <i>Из</i> стекла. <i>Оно</i> улыбается. <i>Не я</i>. Я поднимаю голову. <i>Комната</i> исчезла. Я — <i>внутри</i> чего-то большого, <i>тёмного</i>, <i>тёплого</i>, <i>дышащего</i>. Это <i>не здание</i>, это <span class="ghost-word" id="word5">живое</span>. Стены <i>пульсируют</i>, <i>медленно</i>, <i>вдох</i>, <i>выдох</i>, <i>вдох</i>, <i>выдох</i>. Я иду по стеклянному полу, мимо <i>своих</i> отражений, которые смотрят вверх, улыбаются, машут, <i>не я</i>. Впереди — <i>свет</i>, <i>тусклый</i>, <i>жёлтый</i>, <i>насторожливый</i>. Я иду к нему. <i>Шаг</i>, <i>шаг</i>, <i>шаг</i>. Пол под ногами становится <i>мягким</i>, <i>тёплым</i>, <i>живым</i>, он <i>впитывает</i> следы. Я <i>выхожу</i> к свету. Это <i>не дверь</i>, это <span class="ghost-word" id="word6">рот</span>, <i>большой</i>, <i>открытый</i>, <i>тёплый</i>, <i>тёмный</i>. Из него идёт <i>запах</i> — <i>воспоминаний</i>, <i>сладкий</i>, <i>гнилой</i>, <i>знакомый</i>. Я <i>внутри</i> него. Я <i>внутри</i> того, кто <i>спит</i>. <i>Ты</i>. <i>Я</i>. <i>Он</i>. Я — <i>в твоём сне</i>. Я — <i>в моём сне</i>. Я — <i>сон</i>. Я — <i>ты</i>. Я — <i>ничто</i>. Я — <i>всё</i>. Я — <i>внутри</i> сна, <i>внутри</i> комнаты, <i>внутри</i> чашки, <i>внутри</i> осколка, <i>внутри</i> тебя, <i>внутри</i> меня, <i>внутри</i> <i>него</i>. Я — <i>внутри</i>. Я — <i>вне</i>. Я — <i>внутри</i> <i>вздоха</i>. Я — <i>внутри</i> <i>вздоха</i>. Я — <i>внутри</i> <i>вздоха</i>...</p>
+        <div class="nav-buttons">
+            <button id="prev-btn2">Назад</button>
+            <button id="new-btn2" onclick="window.location.href='../index.html'">Домой</button>
+            <button id="next-btn2">Следующая страница</button>
+        </div>
+    </div>
+
+    <!-- Третья страница -->
+    <div id="page3" class="page">
+        <p>...<span class="ghost-word" id="word7">Вздох</span>. Это всего лишь <span class="ghost-word" id="word8">сон</span>… Но надвигается новый… Все время что-то непонятное происходит со мной, и я не понимаю, что мне нужно сделать с этим. Может, это знаки? Может, я просто схожу с ума во <span class="ghost-word" id="word9">сне</span>? И тут я падаю вниз, на кафельный пол. Холодный, мрачный, грязный, весь в пыли от старости и такой знакомый… Словно я был здесь когда-то давно. Человек. Он похож на меня… Карие глаза, темные волосы. Это я? Нет, не я. Женщина, не понимаю… На полу — разбитая чашка. Осколки. В одном из них — дыра. А в дыре — комната. Та самая. Где стены дышат, где воздух густой, где я смеюсь тихо, глядя на картину, на себя, на себя, на себя… Это похоже на кроличью нору. Это похоже на абсурдный бред. Я не понимаю, почему я это читаю. Стоп. Что? Я читаю? Я — не я. Я — тот, кто смотрит. Я — тот, кто смеётся. Я — в чашке. Я — в осколке. Я — в комнате. Я — в твоём <span class="ghost-word" id="word10">сне</span>. Ты — в моём. Мы — в нём. <span class="ghost-word" id="word11">Вздох</span>. Внутри. Вне. Внутри. Вне. Внутри <span class="ghost-word" id="word12">вздоха</span>. Внутри <span class="ghost-word" id="word13">вздоха</span>. Внутри <span class="ghost-word" id="word14">вздоха</span>…</p>
+        <p>Пол под ногами вдруг перестаёт быть полом. Он исчезает, как дым, как <span class="ghost-word" id="word15">сон</span>, как я. Я падаю. Но не вниз. Вперёд. В другое. Воздух другой. Влажный. Тяжёлый. Запах земли, гниющих листьев, старого дерева и чего-то ещё. Живого. Сверху — не потолок, а небо. Серое, затянутое тучами, сквозь которые пробивается тусклый свет. Я стою. На земле. Мокрой. Грязной. Мои ноги утопают в траве. Высокой. Жёсткой. Она цепляется за брюки, за пальцы, за мысли. Вокруг — разрушенное здание. Стены — в трещинах. Из них торчат куски арматуры, как кости. Окна — пустые глазницы. В них — паутина, пыль, дождь. Дверной проём — зияющая рана. Из неё выглядывает корень. Толстый. Старый. Живой. Я подхожу ближе. Внутри — тени. Глубокие, как пещеры. Воздух — гуще. Он тянет вглубь. Я иду. Мимо обломков кирпича, мимо скелета велосипеда, мимо кустов, которые вросли в пол, в стены, в потолок. Всё здесь — единое целое. Природа и руины. Жизнь и смерть. Я. И не я. Вдруг — шорох. Сзади. Я оборачиваюсь. Никого. Только трава. Только тень. Только ощущение, что за мной кто-то идёт. Я иду дальше. Вглубь. В тень. В тишину. В <span class="ghost-word" id="word16">сон</span>. В котором я — не я.</p>
+        <div class="nav-buttons">
+            <button id="prev-btn3">Назад</button>
+            <button id="new-btn3" onclick="window.location.href='../index.html'">Домой</button>
+            <button id="next-btn3">Следующая страница</button>
+        </div>
+    </div>
+
+    <!-- Четвёртая страница -->
+    <div id="page4" class="page">
+        <p>...В <span class="ghost-word" id="word17">сон</span>, в котором я — не я. А кто? Руины смыкаются. Тени становятся плотными, липкими, они цепляются за кожу, оставляя чёрные полосы. Воздух не просто влажный — он сырой, он заполняет лёгкие тяжёлой, почти жидкой массой. Я иду вглубь здания, в его самое сердце, туда, где пульсация, которую я слышал с самого начала, становится гулким, всепоглощающим стуком. Это не сердце. Это молот. Он бьёт по наковальне из костей.</p>
+        <p>В конце зала, в полумраке, стоит он. Тот человек. Похожий на меня. Он стоит на коленях, спиной ко мне. Его плечи напряжены. Перед ним — груда. Сначала я думаю, что это кирпичи. Потом — поленья. Но это не кирпичи и не поленья.</p>
+        <p>Это осколки. Осколки чашек. Сотни, тысячи осколков. И в каждом — дыра. В каждой дыре — комната. В каждой комнате — я. Я, который смотрит на картину. Я, который смеётся. Я, который плачет. Я, который разбивает очередную чашку. Это не зеркала. Это ловушки. Бесконечные, самовоспроизводящиеся ловушки души.</p>
+        <p>Он, тот человек, берёт один осколок. Длинный, острый, как бритва. Он поворачивается ко мне. Его лицо — это моё лицо, но с одной стороны оно опалено, кожа стянута в грубый шрам, глаз нет, только чёрная, дымящаяся впадина. Он улыбается. Здоровой стороной рта.</p>
+        <p>— Ты <span class="ghost-word" id="word18">опоздал</span>, — говорит он. Но голос не мой. Это скрип ржавых петель, шепот из вентиляции склепа.</p>
+        <p>Он подносит осколок к своему горлу. Я хочу крикнуть «нет», но мой рот набит влажной землёй и червями. Я не могу издать ни звука. Я могу только смотреть.</p>
+        <p>Он проводит осколком по горлу. Но крови нет. Вместо неё из разреза высыпаются... осколки. Мелкие, звенящие, они падают на каменный пол, и каждый несёт в себе новую дыру, новую комнату, нового меня.</p>
+        <p>Он падает вперёд, рассыпаясь в прах из стекла и пепла. А передо мной теперь стоит Она. Женщина из третьей страницы. Её лицо — это чистейший, самый пустой холст. На нём нет ни глаз, ни рта, ни морщин. Только идеальная, фарфоровая гладкость.</p>
+        <p>Она протягивает руку. В её ладони лежит целая чашка. Та самая. Но она сделана не из керамики. Она сделана из застывшей плоти, тёплой и пульсирующей. Сквозь полупрозрачные стенки виден тёмный, густой напиток. Он пахнет воспоминаниями, которые лучше было забыть.</p>
+        <p>— Выпей, — говорит её безликий голос, звучащий прямо у меня в черепе. — Это конец. Или начало. Или просто пауза между <span class="ghost-word" id="word19">вздохами</span>.</p>
+        <p>Я беру чашку. Мои руки — старые, в морщинах, чужие — дрожат. Пульсация чашки синхронизируется с ударами молота в моей груди. Я подношу её к губам.</p>
+        <p>И вижу. На дне чашки — не дно. Там — дыра. И в ней — комната. В этой комнате стою я. Настоящий я. С открытыми глазами, полными ужаса. А за моей спиной, обняв меня, прильнув обожжённой щекой к моей щеке, стоит он. Тот человек. И его рука с длинным осколком лежит на моей руке, направляя её. Я не пью. Это он пьёт. Он пьёт меня.</p>
+        <p>Я опрокидываю чашку. Тёплая, чёрная жидкость обжигает пальцы, она не проливается, а впитывается в кожу, входит в меня, заполняет вены. Мир взрывается болью. Белой, острой, абсолютной.</p>
+        <p>Я падаю. Но я уже упал. Я лежу на холодном, мокром полу. Это пол первой комнаты. Я смотрю вверх. На стене висит картина. На ней изображён этот зал, эти руины, и я, стоящий на коленях перед женщиной без лица. А с картины, на цепкой паутине, свисает чашка. Она раскачивается. Туда-сюда. Туда-сюда.</p>
+        <p>Тихий смех. Он идёт не из картины. Он идёт из меня. Он вырывается из горла, которое я только что перерезал. Он наполняет комнату. Он становится воздухом. Густым. Мрачным. Жестоким.</p>
+        <p>Я закрываю глаза. И наконец-то понимаю. Это не <span class="ghost-word" id="word20">сон</span>. Это пищеварение. Мир переваривает меня. И я уже почти переварен.</p>
+        <div class="nav-buttons">
+            <button id="prev-btn4">Назад</button>
+            <button id="new-btn4" onclick="window.location.href='../index.html'">Домой</button>
+            <button id="next-btn4">Следующая страница</button>
+        </div>
+    </div>
+
+    <!-- Пятая страница -->
+    <div id="page5" class="page">
+        <p>...Жестоким. Этот смех выскребал меня изнутри, оставив лишь пустую, высохшую скорлупу. Он стих так же внезапно, как и начался, оставив после себя вакуум, звенящую, абсолютную тишину. Ни пульсации, ни шёпота, ни собственного дыхания. Я лежал на холодном полу и чувствовал, как последние крупицы «я» рассыпаются в пыль. Это был конец. Не с криком, а с беззвучным выдохом в безразличную пустоту. Я канул во мрак. Полностью. Без остатка.</p>
+        <p>А потом — свет.</p>
+        <p>Резкий, белый, болезненный. Он обжёг веки. Я застонал. Грубый, реальный звук, рождённый в собственной глотке. Под спиной чувствовалась не холодная плита, а мятая простыня. В ноздри ударил знакомый запах — пыли, старого дерева и застоявшегося воздуха спальни.</p>
+        <p>Я открыл глаза. Потолок. Мой потолок, с <span class="ghost-word" id="word21">знакомой</span> трещиной в углу. Я лежал в своей кровати. Сердце колотилось, выбивая сумасшедший ритм. Я провёл рукой по лицу — живую, свою руку, без морщин и чужой памяти. <span class="ghost-word" id="word22">Сон</span>. Это был всего лишь сон. Ужасающий, бесконечный, выворачивающий наизнанку, но всего лишь сон.</p>
+        <p>С облегчением, граничащим с истерикой, я откинул одеяло и сел на кровати. Ноги сами понесли меня к окну, чтобы увидеть реальный мир, убедиться в нём. Я отдернул занавеску.</p>
+        <p>И замер.</p>
+        <p>За окном не было улицы с фонарями, не было утреннего солнца. За окном была комната. Та самая. С бетонным полом, с падающим потом, с густым, удушающим воздухом. А в центре комнаты, спиной ко мне, стоял я. И смотрел на картину на стене.</p>
+        <p>Я отшатнулся от окна, сердце замерло. Это не кончилось. Это никогда не кончится. Я обернулся, ища выход, и мой взгляд упал на прикроватный столик.</p>
+        <p>На нём стояла чашка с кофе. Моя утренняя чашка. И от её боков, от дна, во все стороны расходилась паутина трещин. Сквозь самую большую из них, у самого основания, был виден крошечный, тусклый просвет. А в нём — комната. И я в ней, стоящий у окна и смотрящий с ужасом на свою же кровать.</p>
+        <p>Я медленно поднял взгляд и встретился с собственным отражением в тёмном экране выключенного телевизора. В отражении я стоял не здесь. Я стоял в той комнате. И я улыбался. Той самой, не своей улыбкой.</p>
+        <p>Воздух в спальне внезапно стал густым и тяжёлым. Сделать вдох стало больно.</p>
+        <p>Я не <span class="ghost-word" id="word23">проснулся</span>. Я просто сменил клетку.</p>
+        <div class="final-text">Продолжение следует…</div>
+        <div class="nav-buttons">
+            <button id="prev-btn5">Назад</button>
+            <button id="new-btn5" onclick="window.location.href='../index.html'">Домой</button>
+            <button id="next-btn5" disabled>Следующая страница</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Слова для замены на первой странице
+    const wordOptions1 = {
+        word1: ['пот', 'туман', 'взгляд'],
+        word2: ['опоздал', 'заблудился', 'ушёл']
+    };
+
+    // Слова для замены на второй странице
+    const wordOptions2 = {
+        word3: ['он', 'призрак', 'взгляд', 'сон'],
+        word4: ['стекло', 'тень', 'вода', 'воспоминание'],
+        word5: ['живое', 'дышащее', 'тёплое', 'мертвое'],
+        word6: ['рот', 'дверь', 'окно', 'дыра']
+    };
+
+    // Слова для замены на третьей странице
+    const wordOptions3 = {
+        word7: ['Вздох', 'Шёпот', 'Крик', 'Смех'],
+        word8: ['сон', 'воспоминание', 'кошмар', 'призрак'],
+        word9: ['сне', 'восприятии', 'взгляде', 'дыре'],
+        word10: ['сне', 'восприятии', 'взгляде', 'дыре'],
+        word11: ['Вздох', 'Шёпот', 'Крик', 'Смех'],
+        word12: ['вздоха', 'восприятия', 'взгляда', 'дыры'],
+        word13: ['вздоха', 'восприятия', 'взгляда', 'дыры'],
+        word14: ['вздоха', 'восприятия', 'взгляда', 'дыры'],
+        word15: ['сон', 'воспоминание', 'призрак', 'взгляд'],
+        word16: ['сон', 'восприятие', 'взгляд', 'дыра']
+    };
+
+    // Слова для замены на четвёртой странице
+    const wordOptions4 = {
+        word17: ['сон', 'воспоминание', 'призрак', 'взгляд'],
+        word18: ['опоздал', 'рано', 'пришёл', 'ушёл'],
+        word19: ['вздохами', 'шагами', 'взглядами', 'снами'],
+        word20: ['сон', 'воспоминание', 'призрак', 'взгляд']
+    };
+
+    // Слова для замены на пятой странице
+    const wordOptions5 = {
+        word21: ['знакомой', 'страшной', 'тёплой', 'мёртвой'],
+        word22: ['Сон', 'Кошмар', 'Воспоминание', 'Призрак'],
+        word23: ['проснулся', 'ушёл', 'остался', 'исчез']
+    };
+
+    // Функция для случайного изменения слова на активной странице
+    function changeRandomWord() {
+        const currentPage = document.querySelector('.page.active');
+        if (currentPage.id === 'page1') {
+            const wordIds = Object.keys(wordOptions1);
+            const randomId = wordIds[Math.floor(Math.random() * wordIds.length)];
+            const element = document.getElementById(randomId);
+            const options = wordOptions1[randomId];
+            if (element && options) {
+                const randomOption = options[Math.floor(Math.random() * options.length)];
+                element.textContent = randomOption;
+                element.classList.add('fade-in');
+                setTimeout(() => element.classList.remove('fade-in'), 300);
+            }
+        } else if (currentPage.id === 'page2') {
+            const wordIds = Object.keys(wordOptions2);
+            const randomId = wordIds[Math.floor(Math.random() * wordIds.length)];
+            const element = document.getElementById(randomId);
+            const options = wordOptions2[randomId];
+            if (element && options) {
+                const randomOption = options[Math.floor(Math.random() * options.length)];
+                element.textContent = randomOption;
+                element.classList.add('fade-in');
+                setTimeout(() => element.classList.remove('fade-in'), 300);
+            }
+        } else if (currentPage.id === 'page3') {
+            const wordIds = Object.keys(wordOptions3);
+            const randomId = wordIds[Math.floor(Math.random() * wordIds.length)];
+            const element = document.getElementById(randomId);
+            const options = wordOptions3[randomId];
+            if (element && options) {
+                const randomOption = options[Math.floor(Math.random() * options.length)];
+                element.textContent = randomOption;
+                element.classList.add('fade-in');
+                setTimeout(() => element.classList.remove('fade-in'), 300);
+            }
+        } else if (currentPage.id === 'page4') {
+            const wordIds = Object.keys(wordOptions4);
+            const randomId = wordIds[Math.floor(Math.random() * wordIds.length)];
+            const element = document.getElementById(randomId);
+            const options = wordOptions4[randomId];
+            if (element && options) {
+                const randomOption = options[Math.floor(Math.random() * options.length)];
+                element.textContent = randomOption;
+                element.classList.add('fade-in');
+                setTimeout(() => element.classList.remove('fade-in'), 300);
+            }
+        } else if (currentPage.id === 'page5') {
+            const wordIds = Object.keys(wordOptions5);
+            const randomId = wordIds[Math.floor(Math.random() * wordIds.length)];
+            const element = document.getElementById(randomId);
+            const options = wordOptions5[randomId];
+            if (element && options) {
+                const randomOption = options[Math.floor(Math.random() * options.length)];
+                element.textContent = randomOption;
+                element.classList.add('fade-in');
+                setTimeout(() => element.classList.remove('fade-in'), 300);
+            }
+        }
+    }
+
+    // Запуск изменения слов
+    setInterval(changeRandomWord, 7000); // Каждые 7 секунд
+
+    // Логика навигации
+    // Страница 1 -> 2
+    document.getElementById('next-btn').addEventListener('click', function() {
+        document.getElementById('page1').classList.remove('active');
+        document.getElementById('page2').classList.add('active');
+        document.getElementById('prev-btn').disabled = false;
+        this.disabled = true;
+    });
+
+    // Страница 2 -> 3
+    document.getElementById('next-btn2').addEventListener('click', function() {
+        document.getElementById('page2').classList.remove('active');
+        document.getElementById('page3').classList.add('active');
+        document.getElementById('prev-btn2').disabled = false;
+        this.disabled = true;
+    });
+
+    // Страница 3 -> 4
+    document.getElementById('next-btn3').addEventListener('click', function() {
+        document.getElementById('page3').classList.remove('active');
+        document.getElementById('page4').classList.add('active');
+        document.getElementById('prev-btn3').disabled = false;
+        this.disabled = true;
+    });
+
+    // Страница 4 -> 5
+    document.getElementById('next-btn4').addEventListener('click', function() {
+        document.getElementById('page4').classList.remove('active');
+        document.getElementById('page5').classList.add('active');
+        document.getElementById('prev-btn4').disabled = false;
+        this.disabled = true;
+    });
+
+    // Страница 5 -> 4
+    document.getElementById('prev-btn5').addEventListener('click', function() {
+        document.getElementById('page5').classList.remove('active');
+        document.getElementById('page4').classList.add('active');
+        document.getElementById('next-btn4').disabled = false;
+        this.disabled = true;
+    });
+
+    // Страница 4 -> 3
+    document.getElementById('prev-btn4').addEventListener('click', function() {
+        document.getElementById('page4').classList.remove('active');
+        document.getElementById('page3').classList.add('active');
+        document.getElementById('next-btn3').disabled = false;
+        this.disabled = true;
+    });
+
+    // Страница 3 -> 2
+    document.getElementById('prev-btn3').addEventListener('click', function() {
+        document.getElementById('page3').classList.remove('active');
+        document.getElementById('page2').classList.add('active');
+        document.getElementById('next-btn2').disabled = false;
+        this.disabled = true;
+    });
+
+    // Страница 2 -> 1
+    document.getElementById('prev-btn2').addEventListener('click', function() {
+        document.getElementById('page2').classList.remove('active');
+        document.getElementById('page1').classList.add('active');
+        document.getElementById('next-btn').disabled = false;
+        this.disabled = true;
+    });
+
+    // Страница 1 <- (из 2)
+    document.getElementById('prev-btn').addEventListener('click', function() {
+        document.getElementById('page1').classList.add('active');
+        document.getElementById('page2').classList.remove('active');
+        this.disabled = true;
+        document.getElementById('next-btn').disabled = false;
+    });
+
+    // Изначально кнопки "Назад" на 1-й и "Следующая" на последней странице отключены
+    document.getElementById('prev-btn').disabled = true;
+    document.getElementById('next-btn5').disabled = true;
+
+    // При загрузке страницы показываем первую
+    document.getElementById('page1').classList.add('active');
+
+</script>
+
+</body>
+</html>
