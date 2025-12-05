@@ -202,6 +202,82 @@
             text-align: center;
         }
         /* === Конец таблицы рекордов === */
+
+        /* === Стили для снега === */
+.snowflakes-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Позволяет кликать сквозь снег */
+    z-index: 1000; /* Высокий z-index, но ниже загрузочного экрана */
+    overflow: hidden;
+}
+
+.snowflake {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+    border-radius: 50%;
+    opacity: 6;
+    filter: blur(1px);
+    /* Анимация снега по диагонали */
+    animation: fallDiagonal 10s linear infinite;
+}
+
+/* Для кастомных снежинок (изображений) */
+.snowflake.custom-snowflake {
+    width: 20px; /* Базовый размер */
+    height: 20px;
+    /* Убираем все стили, связанные с фоном */
+    background: none !important; /* Гарантируем отсутствие фона */
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.snowflake.custom-snowflake img {
+    width: 100%;
+    height: 100%;
+    display: block; /* Убираем возможные отступы */
+    image-rendering: pixelated; /* Если нужно сохранить пиксельный стиль */
+    /* Ключевая строка: гарантируем прозрачность */
+    background: transparent !important;
+    /* Дополнительно: если изображение всё равно показывает белый фон, можно попробовать это */
+    mix-blend-mode: screen; /* Это может помочь, но иногда создает странные эффекты */
+}
+
+@keyframes fallDiagonal {
+    0% {
+        transform: translateY(-100vh) translateX(150vw);
+        opacity: 2;
+    }
+    100% {
+        transform: translateY(130vh) translateX(-250vw);
+        opacity: 4;
+    }
+}
+/* === Конец стилей снега === */
+/* === Стили для елки === */
+.fixed-tree {
+    position: fixed; /* Фиксируем позицию */
+    bottom: 0;       /* Прижимаем к нижнему краю */
+    left: 0;        /* Прижимаем к левому краю */
+    width: 30vw;    /* Ширина елки (например, 30% от ширины окна) */
+    height: auto;   /* Высота изменяется пропорционально ширине */
+    z-index: 100;   /* Поверх фона, но ниже, чем, например, загрузочный экран (z-index: 9999) */
+    pointer-events: none; /* Позволяет кликать сквозь елку */
+}
+
+.tree-image {
+    width: 100%;    /* Растягиваем изображение на всю ширину контейнера */
+    height: auto;   /* Сохраняем пропорции */
+    filter: blur(12px); /* Применяем размытие (можно изменить значение 2px) */
+}
+/* === Конец стилей елки === */
+
     </style>
 </head>
 <body>
@@ -220,6 +296,10 @@
             <!-- === Конец текста === -->
         </div>
     </div>
+
+    <!-- Контейнер для снега -->
+    <div class="snowflakes-container" id="snowContainer"></div>
+
     <!-- Плавающий navbar -->
     <nav class="navbar">
         <div class="nav-container">
@@ -251,13 +331,17 @@
         <div class="section-content">
             <h1><img src="images/1.png" alt="Фото 1" class="section-icon"> Здраствуй!</h1>
             <p class="section-info">Вверху там все самое важное, клацай куда хочешь.</p>
-            <p class="section-info">Так же хочу посоветовать тебе смотреть этот сайт с ноутбука, либо включить в браузере включить версию для пк, потому что настраивать отдельно для телефонов оказалась куда тяжелее чем казалось.. в декабре может добавлю что то или изменю, спойлеры жизни, но кто знает что может случиться, верно?🙃 Весь список каких изменений в играх в отдельном пункте 🧸</p>
+            <p class="section-info">Лучше всего сайт смотреть с ноутбука или в браузере телефона выбрать "Версию для ПК". Честно говоря сделать удобную мобильную версию оказалось непросто, над этим ещё предстоит помучаться.</p>
+
+<p class="section-info">Насчёт обновлений: если всё сложится, то в декабре планирую кое-что добавить или изменить. Но жизнь штука непредсказуемая, так что посмотрим? <img src="images/36.png" alt="Смайл" style="width: 4em; height: 4em; vertical-align: middle;"></p>
+
+<p class="section-info">А чтобы всегда быть в курсе, все игровые изменения я выношу в отдельный пункт в "игры". Так что заглядывай туда<img src="images/37.png" alt="Смайл" style="width: 3em; height: 1.7em; vertical-align: middle;"></p>
         </div>
     </section>
     <section id="games" class="section">
         <div class="section-content">
             <h1><img src="images/3.png" alt="Фото 3" class="section-icon"> Игры</h1>
-            <p class="section-info">Выбери свою игру и начни играть, а то что сидеть</p>
+            <p class="section-info">Выбери свою игру и начни играть, а то так и уснешь</p>
             <div class="game-grid">
                 <a href="games/book.html" class="game-card">Абсурдный рассказ</a>
                 <a href="games/music.html" class="game-card">Музыкальный плеер</a>
@@ -294,13 +378,15 @@
     <section id="profile" class="section">
         <div class="section-content">
             <h1><img src="images/2.png" alt="Фото 2" class="section-icon"> Лиза</h1>
-            <p class="section-info">Это все тестовый формат, давай представим что ты тут самая крутая в очках, как котик, который здесь: <a href="games/room.html" class="clickable-text">Ну тыкни</a>🙃</p>
+            <p class="section-info">Пока здесь только тестовая версия. Остаётся представить, что ты тут главный специалист в очках и с налётом кошачьей уверенности. <a href="games/room.html" class="clickable-text"> Ну что, посмотришь на себя?</a>🙃</p>
         </div>
     </section>
     <section id="settings" class="section">
         <div class="section-content">
             <h1><img src="images/5.png" alt="Фото 5" class="section-icon"> Настройки</h1>
-            <p class="section-info">Здесь типо какие то настройки, но оно тебе не нужно, поэтому просто смотрим на самурая</p>
+            <p class="section-info">"Настройки" конечно громко сказано для одного заголовка, правда? Ладно, не будем придираться, лучше взглянем на эту мощную фигуру в виде самурая!
+
+</p>
             <!-- Контейнер для самурая -->
             <div class="samurai-container">
                 <div class="samurai idle" id="samurai"></div>
@@ -311,7 +397,7 @@
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-content">
-                <p>&copy; Здесь должно быть что то важное, но я и так типо важный</p>
+                <p>&copy; Обычно в этом разделе пишут что-то юридическое. Но раз его нет, то буду я</p>
             </div>
         </div>
     </footer>
@@ -375,6 +461,87 @@
                 loadingOverlay.classList.add('hidden');
             }, 3000); // 3000 миллисекунд = 3 секунды
         });
+
+        // === Скрипт для снега и звука ===
+        document.addEventListener('DOMContentLoaded', function () {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            // Ждем, пока загрузочный экран исчезнет (3 секунды) и добавляем задержку 0.5 секунды
+            setTimeout(() => {
+                const snowContainer = document.getElementById('snowContainer');
+                const customImages = ['images/34.png', 'images/35.png'];
+
+                // --- Создание снежинок ---
+                // Обычные снежинки (круги)
+                for (let i = 0; i < 50; i++) {
+                    const snowflake = document.createElement('div');
+                    snowflake.classList.add('snowflake');
+                    snowContainer.appendChild(snowflake);
+
+                    // Случайные параметры для анимации
+                    const duration = 5 + Math.random() * 10; // 5-15 секунд
+                    const delay = Math.random() * 5; // 0-5 секунд задержки
+                    const size = 2 + Math.random() * 6; // 2-8 пикселей
+                    const startX = 100 + Math.random() * 170; // Начинают немного правее экрана
+                    const opacity = 0.5 + Math.random() * 0.5; // 0.5-1
+
+                    snowflake.style.left = `${startX}vw`;
+                    snowflake.style.width = `${size}px`;
+                    snowflake.style.height = `${size}px`;
+                    snowflake.style.animation = `fallDiagonal ${duration}s linear ${delay}s infinite`;
+                    snowflake.style.opacity = opacity;
+                }
+
+                // Кастомные снежинки (изображения)
+                for (let i = 0; i < 10; i++) {
+                    const snowflake = document.createElement('div');
+                    // Случайно выбираем изображение
+                    const imgClass = Math.random() > 0.5 ? 'custom-34' : 'custom-35';
+                    snowflake.classList.add('snowflake', 'custom-snowflake', imgClass);
+                    snowContainer.appendChild(snowflake);
+
+                    // Создаем элемент img
+                    const img = document.createElement('img');
+                    img.src = customImages[imgClass === 'custom-34' ? 0 : 1]; // Выбираем нужный URL
+                    snowflake.appendChild(img);
+
+                    // Случайные параметры для анимации и размера
+                    const duration = 6 + Math.random() * 12; // 6-18 секунд
+                    const delay = Math.random() * 5; // 0-5 секунд задержки
+                    const size = 10 + Math.random() * 36; // 10-40 пикселей
+                    const startX = 100 + Math.random() * 170; // Начинают немного правее экрана
+                    const opacity = 0.6 + Math.random() * 0.4; // 0.6-1
+
+                    snowflake.style.left = `${startX}vw`;
+                    snowflake.style.width = `${size}px`;
+                    snowflake.style.height = `${size}px`;
+                    snowflake.style.animation = `fallDiagonal ${duration}s linear ${delay}s infinite`;
+                    snowflake.style.opacity = opacity;
+                }
+
+                // --- Воспроизведение звука ---
+                const audio = document.createElement('audio');
+                audio.src = 'assets/music31.mp3';
+                audio.loop = true; // Зацикливаем воспроизведение
+                audio.volume = 0.35; // Устанавливаем громкость (0.0 - 1.0)
+
+                // Пытаемся воспроизвести звук (многие браузеры требуют взаимодействия пользователя)
+                // Поэтому воспроизводим после задержки и игнорируем ошибки
+                audio.play().catch(e => {
+                    console.log("Автовоспроизведение звука заблокировано, будет воспроизводиться после взаимодействия пользователя.");
+                    // Если автовоспроизведение не сработало, можно попробовать по клику
+                    document.body.addEventListener('click', function playAudioOnInteraction() {
+                        audio.play().catch(e => console.error("Ошибка воспроизведения аудио:", e));
+                        document.body.removeEventListener('click', playAudioOnInteraction);
+                    });
+                });
+
+            }, 3500); // 3500 миллисекунд = 3.5 секунды
+        });
     </script>
+        <!-- Фиксированная елка в левом нижнем углу -->
+    <div class="fixed-tree">
+        <img src="images/38.png" alt="Ёлка" class="tree-image">
+    </div>
 </body>
 </html>
