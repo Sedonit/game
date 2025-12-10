@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор новелл</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=PT+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        /* ----------------------- Общие стили и переменные (Детективный Нуар) ----------------------- */
+        :root {
+            --dark-bg: #151515;
+            /* Глубокий угольно-черный (дым)*/
+            --primary-bg: #222222;
+            /* Темный металл/стол*/
+            --paper-color: #D7B04D;
+            /* Цвет старой бумаги/лампы (Акцент)*/
+            --border-color: #404040;
+            /* Цвет рамки или шва*/
+            --text-color: #E0E0E0;
+            /* Светлый текст*/
+            --low-contrast-text: #A0A0A0;
+            /* Тусклый, "печатный" текст*/
+            --shadow-heavy: rgba(0, 0, 0, 0.9);
+            /* Тяжелые, нуарные тени*/
+            --transition-time: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            /* Моноширинный шрифт - имитация печатной машинки */
+            font-family: 'PT Mono', monospace;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            /* Легкий градиент для ощущения низкого освещения*/
+            background-image: radial-gradient(circle at top left, rgba(40, 40, 40, 0.6) 0%, var(--dark-bg) 70%);
+        }
+        
+        /* ----------------------- НОВЫЙ СТИЛЬ: Инициальное затемнение ----------------------- */
+        #initial-blackout {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            /* Полный черный */
+            z-index: 200;
+            /* Выше всех */
+            opacity: 1;
+            transition: opacity 1s ease-out; /* Плавное исчезновение*/
+        }
+        /* ----------------------- /НОВЫЙ СТИЛЬ ----------------------- */
+
+        /* ----------------------- Анимации (Keyframes) ----------------------- */
+        
+        /* Эффект появления - "Вытягивание Досье" */
+        @keyframes fileDraw {
+            0% {
+                opacity: 0;
+                transform: rotateX(90deg) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: rotateX(0deg) scale(1);
+            }
+        }
+        
+        @keyframes blackout {
+            0% { background-color: var(--dark-bg); }
+            5% { background-color: #000; }
+            95% { background-color: #000; }
+            100% { background-color: #000; }
+        }
+
+        @keyframes textFadeIn {
+            0%, 50% { opacity: 0; }
+            70% { opacity: 1; }
+            100% { opacity: 1; }
+        }
+
+        /* ----------------------- Общий Контейнер ----------------------- */
+        
+        #room-container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 40px;
+            background-color: var(--primary-bg);
+            border: 4px solid var(--border-color); 
+            box-shadow: 10px 10px 50px var(--shadow-heavy);
+            opacity: 1;
+            transition: opacity var(--transition-time);
+            /* НОВЫЕ СВОЙСТВА: Делаем контейнер гибким, чтобы центрировать экран деталей*/
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* ----------------------- Экран Выбора (Selection Screen) ----------------------- */
+        
+        #selection-screen-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 30px; 
+            align-items: center;
+        }
+        
+        /* ГЛАВНЫЙ ЗАГОЛОВОК */
+        h1 {
+            font-size: 2.2rem;
+            color: var(--paper-color);
+            text-shadow: 0 0 5px rgba(215, 176, 77, 0.5);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* КНОПКА ВЫХОДА */
+        #exit-button {
+            background-color: #333;
+            color: var(--low-contrast-text);
+            border: 1px dashed var(--border-color);
+            padding: 8px 18px;
+            border-radius: 0; 
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: block;
+            margin-bottom: 20px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        #exit-button:hover {
+            background-color: #444;
+            border-color: var(--paper-color);
+            color: var(--paper-color);
+        }
+
+        #selection-screen {
+            display: flex;
+            gap: 30px; 
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* КАРТОЧКА: Фотография из Досье */
+        .game-card {
+            width: 300px;
+            height: 480px;
+            background: var(--paper-color); 
+            border: 8px solid var(--primary-bg); 
+            border-radius: 0;
+            padding: 0; 
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 5px 5px 15px var(--shadow-heavy);
+            transition: transform var(--transition-time), box-shadow var(--transition-time);
+            opacity: 0;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px) rotate(1deg);
+            box-shadow: 10px 10px 20px var(--shadow-heavy), 0 0 10px var(--paper-color); 
+        }
+
+        /* ИЗОБРАЖЕНИЕ */
+        .card-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            opacity: 1;
+            filter: grayscale(100%) brightness(120%) contrast(150%);
+            transition: opacity 0.4s, transform 0.4s, filter 0.4s;
+        }
+
+        .game-card:hover .card-image {
+            opacity: 1;
+            filter: grayscale(0%) brightness(100%) contrast(100%);
+            transform: scale(1.03); 
+        }
+
+        /* КОНТЕНТ: Надпись на фото */
+        .card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20%; 
+            z-index: 2;
+            
+            background: var(--primary-bg);
+            padding: 0 10px 10px 10px; 
+            
+            display: flex;
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+        }
+
+        .card-content h3 {
+            font-size: 1.2rem;
+            color: var(--paper-color);
+            text-shadow: 0 0 3px var(--paper-color); 
+            margin: 0;
+            text-transform: uppercase;
+        }
+        
+        /* ----------------------- Экран Детализации (Detail Screen) ----------------------- */
+
+        #detail-screen {
+            display: none;
+            opacity: 0;
+            transition: opacity var(--transition-time), transform var(--transition-time);
+            padding: 50px;
+            background: var(--primary-bg);
+            border: 1px solid var(--paper-color);
+            border-radius: 0;
+            box-shadow: 0 0 40px var(--shadow-heavy);
+            
+            /* КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: Подгоняем ширину под контент*/
+            width: fit-content;
+            align-self: center; /* Центрируем, так как родитель - flex-контейнер*/
+        }
+        
+        .detail-flex {
+            display: flex;
+            gap: 40px;
+        }
+
+        #detail-image {
+            width: 350px;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 0;
+            box-shadow: 5px 5px 10px var(--shadow-heavy);
+            border: 3px solid var(--paper-color);
+            /* filter: grayscale(100%) brightness(120%);  <-- Серый фильтр убран */
+        }
+
+        .detail-info {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #detail-title {
+            font-size: 2.5rem;
+            color: var(--paper-color);
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px rgba(215, 176, 77, 0.8);
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        #detail-description {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 0;
+            color: var(--low-contrast-text);
+        }
+
+        .detail-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 0; 
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .action-button:active {
+            transform: scale(0.97);
+        }
+
+        /* Стиль для кнопки "Назад" */
+        #back-button {
+            background-color: var(--primary-bg);
+            color: var(--low-contrast-text);
+            border: 2px solid var(--border-color);
+            flex-grow: 1;
+            box-shadow: inset 0 0 5px var(--border-color);
+        }
+        #back-button:hover {
+            background-color: #333;
+            color: var(--text-color);
+            border-color: var(--text-color);
+        }
+
+        /* Стиль для кнопки "Скачать" и "Играть" */
+        .primary-button {
+            background-color: var(--paper-color);
+            color: #111; 
+            box-shadow: 0 0 15px var(--paper-color);
+            flex-grow: 2; 
+            border: 1px solid #000;
+        }
+        .primary-button:hover {
+            background-color: var(--paper-color);
+            color: #000;
+            box-shadow: 0 0 25px var(--paper-color);
+            transform: translateY(-2px);
+        }
+        
+        /* ----------------------- Экран "Играть" (Play Screen) ----------------------- */
+        
+        #play-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-bg);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 4rem;
+            color: var(--paper-color);
+            text-shadow: 0 0 30px rgba(215, 176, 77, 0.8);
+            animation: blackout 4s forwards;
+            text-transform: uppercase;
+        }
+        
+        #play-message {
+            opacity: 0;
+            animation: textFadeIn 4s forwards;
+            animation-delay: 1s;
+        }
+        /* === Стили для снега === */
+        .snowflakes-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            /* Позволяет кликать сквозь снег*/
+            z-index: 1000;
+            /* Высокий z-index, но ниже загрузочного экрана*/
+            overflow: hidden;
+        }
+        .snowflake {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #fff;
+            border-radius: 50%;
+            opacity: 6;
+            filter: blur(1px);
+            /* Анимация снега по диагонали*/
+            animation: fallDiagonal 10s linear infinite;
+        }
+        /* Для кастомных снежинок (изображений) */
+        .snowflake.custom-snowflake {
+            width: 20px;
+            /* Базовый размер*/
+            height: 20px;
+            /* Убираем все стили, связанные с фоном */
+            background: none !important;
+            /* Гарантируем отсутствие фона*/
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+        .snowflake.custom-snowflake img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            /* Убираем возможные отступы*/
+            image-rendering: pixelated;
+            /* Если нужно сохранить пиксельный стиль*/
+            /* Ключевая строка: гарантируем прозрачность*/
+            background: transparent !important;
+            /* Дополнительно: если изображение всё равно показывает белый фон, можно попробовать это*/
+            mix-blend-mode: screen;
+            /* Это может помочь, но иногда создает странные эффекты*/
+        }
+        @keyframes fallDiagonal {
+            0% {
+                transform: translateY(-100vh) translateX(150vw);
+                opacity: 2;
+            }
+            100% {
+                transform: translateY(130vh) translateX(-250vw);
+                opacity: 4;
+            }
+        }
+        /* === Конец стилей снега === */
+    </style>
+</head>
+    <div class="snowflakes-container" id="snowContainer"></div>
+<body>
+    
+    <div id="initial-blackout"></div>
+    <div id="room-container">
+        <div id="selection-screen-wrapper">
+            <a id="exit-button" href="../index.html"> Закрыть </a>
+            
+            <h1>Досье по делам:</h1>
+          
+            <div id="selection-screen">
+        
+            </div>
+        </div>
+
+        <div id="detail-screen">
+   
+             <div class="detail-flex">
+                <img id="detail-image" src="" alt="Изображение игры">
+         
+                <div class="detail-info">
+            
+                    <div>
+                        <h1 id="detail-title"></h1>
+                        <p id="detail-description"></p>
+   
+                    </div>
+  
+                    
+                    <div class="detail-buttons">
+                        <button id="back-button" class="action-button">← Главная</button>
+    
+                        <a id="download-button" class="action-button primary-button" href="#" target="_blank">Скачать игру (недоступно)</a>
+                        <button id="play-button" class="action-button primary-button">Играть (Недоступно)</button>
+       
+                    </div>
+                </div>
+     
+            </div>
+        </div>
+    </div>
+    
+    <div id="play-screen">
+        <p id="play-message">Приятной игры</p>
+    </div>
+    
+    <audio id="blackout-sound" src="../assets/music33.mp3" 
+    preload="auto"></audio>
+
+    <audio id="menu-music" src="../assets/music32.mp3" 
+    preload="auto" loop></audio> 
+
+    <script>
+        // Имитация базы данных игр
+        const gamesData = [
+            {
+                id: 1,
+                title: "Серийное дело",
+                description: "Описание пока не придумано, как и название и сюжет и все остальное. Это все тестовая версия, возможно я этим займусь, но это довольно много времени занимает, по сколько создавать сразу в одном экземпляре тяжело и нужно смотреть как это будет выглядить со стороны, учить новый код. Все в одном коде практически нереально это сделать и я придумал вроде как план в голове, но как это будет реализовываться непонятно",
+                imagePath: "../images/40.jpeg", 
+                downloadLink: "#download-gr",
+                playLink: "../games/novell.html" 
+            },
+            {
+                id: 2,
+                title: "Странные виды",
+                description: "Почему вкладка скачать и играть? Я решил или так сказать взял себе на заметку сделать именно приложение как игру, которая вроде как должна будет поддерживаться даже на айфонах, но а на андроидах так точно, а так же думал добавить эту игру и сюда, но из-за больших объемов ресурсов, все это в один сайт всунуть может быть невозможным, поэтому возможно это будет демо версия",
+                imagePath: "../images/41.jpeg", 
+                downloadLink: "#download-sr",
+                playLink: "../games/novell.html" 
+            },
+            {
+                id: 3,
+                title: "Теория запутанности",
+                description: "Да и чего я вдруг решил заняться столь сложным направлением? Да просто понравилась идея, начал изучать, пробовал, учил основы для создания приложения, появились идеи, сюжет, интерес и подумал что если мне понравиться как это будет реализовано, то начну это все делать и импортировать, но пока все довольно смешано, да и новеллы делаются не легко и быстро, поэтому это очень долгое и неинтересное дело, так что посмотрим как выйдет",
+                imagePath: "../images/42.png", 
+                downloadLink: "#download-cp",
+                playLink: "../games/novell.html" 
+            }
+        ];
+
+        // Получение ссылок на DOM-элементы
+        const selectionScreen = document.getElementById('selection-screen');
+        const detailScreen = document.getElementById('detail-screen');
+        const playScreen = document.getElementById('play-screen');
+        const roomContainer = document.getElementById('room-container');
+        const blackoutSound = document.getElementById('blackout-sound');
+        const initialBlackout = document.getElementById('initial-blackout'); 
+        
+        // Переменная: Музыка в меню
+        const menuMusic = document.getElementById('menu-music'); // !!! ИСПРАВЛЕНО !!!
+
+        const detailTitle = document.getElementById('detail-title');
+        const detailDescription = document.getElementById('detail-description');
+        const detailImage = document.getElementById('detail-image');
+ 
+        const downloadButton = document.getElementById('download-button');
+        const playButton = document.getElementById('play-button');
+        const backButton = document.getElementById('back-button');
+        let selectedGameData = null;
+
+
+        // ----------------------- 1. Создание карточек -----------------------
+
+        function createGameCards() {
+            gamesData.forEach(game => {
+                const card = document.createElement('div');
+                card.classList.add('game-card');
+                card.dataset.gameId = game.id;
+              
+                // Внутренняя структура карточки
+                card.innerHTML = `
+                    <img class="card-image" src="${game.imagePath}" alt="${game.title}">
+                    <div class="card-content">
+                        <h3>${game.title}</h3>
+                    </div>
+                `;
+                
+                // Добавление обработчика клика
+                card.addEventListener('click', () => showDetailScreen(game.id));
+       
+                selectionScreen.appendChild(card);
+            });
+        }
+        
+        // ----------------------- Запуск анимации карточек -----------------------
+        function startCardAnimations() {
+             document.querySelectorAll('.game-card').forEach((card, index) => {
+                // Убеждаемся, что старые стили удалены
+                card.style.animation = 'none';
+             
+                // Немного магии, чтобы сбросить анимацию
+                void card.offsetWidth; 
+                // Запускаем анимацию с задержкой, как было изначально
+                card.style.animation = `fileDraw 0.8s forwards ${0.2 + index * 0.2}s`;
+            });
+        }
+        
+        // ----------------------- НОВАЯ ФУНКЦИЯ: Плавное затухание -----------------------
+
+        /**
+         * Плавно уменьшает громкость аудиоэлемента до 0 и останавливает его.
+         * @param {HTMLAudioElement} audio - Аудиоэлемент для затухания.
+         * @param {number} duration - Продолжительность затухания в миллисекундах (300 мс = 0.3 с).
+         */
+        function fadeOutMusic(audio, duration) {
+            const step = 0.05; // На сколько уменьшаем громкость за один шаг
+            const initialVolume = audio.volume;
+            // Рассчитываем интервал так, чтобы общее время затухания было равно duration
+            const intervalTime = duration / (initialVolume / step); 
+            
+            if (intervalTime <= 0 || initialVolume <= 0) {
+                 audio.pause();
+                 return;
+            }
+
+            const fadeInterval = setInterval(() => {
+                if (audio.volume > step) {
+                    audio.volume -= step;
+                } else {
+                    // Громкость достигла нуля, останавливаем интервал и музыку
+                    clearInterval(fadeInterval);
+                    audio.volume = 0; // Гарантируем, что громкость точно 0
+                    audio.pause();
+                }
+            }, intervalTime);
+        }
+
+        
+        // ----------------------- 2. Переключение на экран деталей -----------------------
+
+        function showDetailScreen(gameId) {
+            selectedGameData = gamesData.find(game => game.id === gameId);
+            if (!selectedGameData) return;
+
+            // Заполнение экрана деталей данными
+            detailTitle.textContent = selectedGameData.title;
+            detailDescription.textContent = selectedGameData.description;
+            detailImage.src = selectedGameData.imagePath;
+            detailImage.alt = selectedGameData.title;
+            downloadButton.href = selectedGameData.downloadLink;
+            
+            // Анимация перехода:
+            selectionScreen.style.display = 'none';
+            detailScreen.style.display = 'block';
+            
+            setTimeout(() => {
+                roomContainer.style.opacity = '1';
+                detailScreen.style.opacity = '1';
+                detailScreen.style.transform = 'translateY(0)';
+            }, 50);
+        }
+
+        // ----------------------- 3. Переключение обратно к выбору -----------------------
+
+        backButton.addEventListener('click', () => {
+            detailScreen.style.opacity = '0';
+            
+            setTimeout(() => {
+                detailScreen.style.display = 'none';
+                selectionScreen.style.display = 'flex';
+                
+                // Перезапуск анимации появления (с новой анимацией fileDraw)
+                document.querySelectorAll('.game-card').forEach(card => card.style.opacity = '0');
+                void selectionScreen.offsetWidth; 
+                startCardAnimations();
+                
+            }, parseFloat(getComputedStyle(detailScreen).transitionDuration) * 1000);
+        });
+        
+        // ----------------------- 4. Анимация "Играть" (С Звуком) -----------------------
+
+        playButton.addEventListener('click', () => {
+            if (!selectedGameData) return;
+
+            // !!! НОВОЕ: Запускаем плавное затухание музыки в меню за 0.3 секунды (300 мс) !!!
+            fadeOutMusic(menuMusic, 300);
+
+            // 1. Воспроизводим звук отключения
+            blackoutSound.currentTime = 0;
+            const playPromise = blackoutSound.play();
+            
+            // Обработка возможной ошибки
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.error("Ошибка при воспроизведении звука:", error);
+                });
+            }
+
+            // 2. Скрыть основной контент
+            roomContainer.style.display = 'none';
+            
+            // 3. Показать экран "Играть"
+            playScreen.style.display = 'flex';
+  
+            // 4. Запуск перенаправления после завершения анимации и звука (4.5 секунды)
+            setTimeout(
+                () => {
+                    window.location.href = selectedGameData.playLink;
+                }, 6500
+            );
+        });
+        
+        // ----------------------- 5. Инициализация -----------------------
+
+        window.onload = () => {
+            createGameCards();
+            detailScreen.style.display = 'none';
+            detailScreen.style.transform = 'translateY(20px)';
+            
+            // !!! НОВОЕ: Запускаем музыку и обработку автозапуска !!!
+            menuMusic.volume = 1; // Устанавливаем начальную громкость
+            
+            // Пробуем запустить, но слушаем клик, если браузер блокирует.
+            const musicPromise = menuMusic.play();
+            if (musicPromise !== undefined) {
+                musicPromise.catch(error => {
+                    // Если браузер блокирует, ждем первого взаимодействия
+                    console.log("Автозапуск музыки заблокирован. Ждем клика.");
+                    document.addEventListener('click', function startMusic() {
+                        menuMusic.play().catch(e => console.error("Ошибка при запуске музыки после клика:", e));
+                        document.removeEventListener('click', startMusic);
+                    }, { once: true });
+                });
+            }
+            // !!! КОНЕЦ БЛОКА ИНИЦИАЛИЗАЦИИ МУЗЫКИ !!!
+            
+            // НОВОЕ: Запускаем затемнение при загрузке
+            setTimeout(() => {
+                initialBlackout.style.opacity = '0';
+                
+                // Через 1 секунду после начала исчезновения затемнения (или когда оно полностью исчезнет) 
+                setTimeout(() => {
+                    initialBlackout.style.display = 'none';
+                    startCardAnimations(); // Запуск анимации fileDraw для карточек
+                }, 1000); // 1000ms соответствует transition: opacity 1s ease-out; для #initial-blackout
+            }, 500);
+        };
+        
+        // === Скрипт для снега и звука ===
+        document.addEventListener('DOMContentLoaded', function () {
+            // Ждем, пока загрузочный экран исчезнет (если есть) или просто проходит 3.5 секунды
+            setTimeout(() => {
+                const snowContainer = document.getElementById('snowContainer');
+                const customImages = ['../images/34.png', '../images/35.png']; // Укажите пути к вашим PNG-изображениям
+                
+                // --- Создание снежинок ---
+                // Обычные снежинки (круги)
+                for (let i = 0; i < 50; i++) {
+                    const snowflake = document.createElement('div');
+                    snowflake.classList.add('snowflake');
+                    snowContainer.appendChild(snowflake);
+                    
+                    // Случайные параметры для анимации
+                    const duration = 5 + Math.random() * 10; // 5-15 секунд
+                    const delay = Math.random() * 5; // 0-5 секунд задержки
+                    const size = 2 + Math.random() * 6; // 2-8 пикселей
+                    const startX = 100 + Math.random() * 170; // Начинают немного правее экрана
+                    const opacity = 0.5 + Math.random() * 0.5; // 0.5-1
+                    
+                    snowflake.style.left = `${startX}vw`;
+                    snowflake.style.width = `${size}px`;
+                    snowflake.style.height = `${size}px`;
+                    snowflake.style.animation = `fallDiagonal ${duration}s linear ${delay}s infinite`;
+                    snowflake.style.opacity = opacity;
+                }
+                
+                // Кастомные снежинки (изображения)
+                for (let i = 0; i < 10; i++) {
+                    const snowflake = document.createElement('div');
+                    // Случайно выбираем изображение
+                    const imgIndex = Math.random() > 0.5 ? 0 : 1;
+                    const imgClass = imgIndex === 0 ? 'custom-34' : 'custom-35';
+                    
+                    snowflake.classList.add('snowflake', 'custom-snowflake', imgClass);
+                    snowContainer.appendChild(snowflake);
+                    
+                    // Создаем элемент img
+                    const img = document.createElement('img');
+                    img.src = customImages[imgIndex]; // Выбираем нужный URL
+                    snowflake.appendChild(img);
+                    
+                    // Случайные параметры для анимации и размера
+                    const duration = 6 + Math.random() * 12; // 6-18 секунд
+                    const delay = Math.random() * 5; // 0-5 секунд задержки
+                    const size = 10 + Math.random() * 36; // 10-40 пикселей
+                    const startX = 100 + Math.random() * 170; // Начинают немного правее экрана
+                    const opacity = 0.6 + Math.random() * 0.4; // 0.6-1
+                    
+                    snowflake.style.left = `${startX}vw`;
+                    snowflake.style.width = `${size}px`;
+                    snowflake.style.height = `${size}px`;
+                    snowflake.style.animation = `fallDiagonal ${duration}s linear ${delay}s infinite`;
+                    snowflake.style.opacity = opacity;
+                }
+                
+            }, 3500) // 3500 миллисекунд = 3.5 секунды
+        });
+        // === Конец скрипта снега и звука ===
+    </script>
+
+</body>
+</html>

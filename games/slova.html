@@ -18,8 +18,10 @@
             line-height: 1.5;
             font-weight: 400;
             color-scheme: light dark;
-            color: rgba(255, 255, 255, 0.87);
-            background-color: #242424;
+            /* ИЗМЕНЕНИЕ 1: Цвет текста для темного фона (светло-серый) */
+            color: #e5e5e5;
+            /* Убираем background-color из :root, он будет в body */
+            background-color: transparent; 
             font-synthesis: none;
             text-rendering: optimizeLegibility;
             -webkit-font-smoothing: antialiased;
@@ -29,13 +31,20 @@
             /* Изображение спрайта */
             --sprite-image: url(https://assets.codepen.io/36869/book.webp);
             /* Параметры анимации спрайта */
-            --sprite-as: .8s; /* Продолжительность анимации */
-            --sprite-ad: normal; /* Направление анимации */
-            --sprite-af: none; /* Режим заполнения анимации */
-            --sprite-ap: running; /* Состояние воспроизведения анимации */
-            --sprite-ai: infinite; /* Количество повторений анимации */
-            --sprite-at: linear; /* Временная функция анимации */
-            --sprite-fr: 12; /* Частота кадров анимации */
+            --sprite-as: .8s;
+            /* Продолжительность анимации */
+            --sprite-ad: normal;
+            /* Направление анимации */
+            --sprite-af: none;
+            /* Режим заполнения анимации */
+            --sprite-ap: running;
+            /* Состояние воспроизведения анимации */
+            --sprite-ai: infinite;
+            /* Количество повторений анимации */
+            --sprite-at: linear;
+            /* Временная функция анимации */
+            --sprite-fr: 12;
+            /* Частота кадров анимации */
         }
 
         /* Базовые стили */
@@ -53,6 +62,15 @@
                 align-items: center;
                 justify-content: center;
                 padding: 1rem;
+                
+                /* ИЗМЕНЕНИЕ 2: Новогодний, темный фон с эффектом боке */
+                background-color: #0f1626; /* Темно-синий/черный (на случай, если изображение не загрузится) */
+                background-image: url('https://images.unsplash.com/photo-1517457211182-e3a479ff4b58?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
+                background-size: cover; /* Растянуть на весь экран */
+                background-attachment: fixed; /* Закрепить фон */
+                background-position: center center; 
+                
+                box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.4); 
             }
 
             .sprite-wrapper {
@@ -83,26 +101,44 @@
                 gap: 3rem;
 
                 /* Параметры спрайта */
-                --sprite-c: 5; /* Количество столбцов в спрайте */
-                --sprite-h: 3000; /* Высота изображения спрайта */
-                --sprite-w: 9600; /* Ширина изображения спрайта */
-                --sprite-f: 7; /* Количество кадров в анимации */
-                --sprite-as: calc(var(--sprite-f) / var(--sprite-fr) * 1s); /* Расчет длительности анимации */
-                --sprite-r: round(up, calc(var(--sprite-f) / var(--sprite-c)), 1); /* Количество строк */
-                --sprite-sh: calc(var(--sprite-h) / var(--sprite-r)); /* Высота одного кадра */
-                --sprite-th: calc(var(--sprite-sh) / 2); /* Целевая высота спрайта (масштабирование) */
-                --sprite-ar: calc(var(--sprite-th) / var(--sprite-sh)); /* Соотношение сторон */
-                --sprite-uh: calc(var(--sprite-h) * var(--sprite-ar)); /* Масштабированная высота */
-                --sprite-uw: calc(var(--sprite-w) * var(--sprite-ar)); /* Масштабированная ширина */
-                --sprite-tw: calc(var(--sprite-uw) / var(--sprite-c)); /* Целевая ширина спрайта */
+                --sprite-c: 5;
+                /* Количество столбцов в спрайте */
+                --sprite-h: 3000;
+                /* Высота изображения спрайта */
+                --sprite-w: 9600;
+                /* Ширина изображения спрайта */
+                --sprite-f: 7;
+                /* Количество кадров в анимации */
+                --sprite-as: calc(var(--sprite-f) / var(--sprite-fr) * 1s);
+                /* Расчет длительности анимации */
+                --sprite-r: round(up, calc(var(--sprite-f) / var(--sprite-c)), 1);
+                /* Количество строк */
+                --sprite-sh: calc(var(--sprite-h) / var(--sprite-r));
+                /* Высота одного кадра */
+                --sprite-th: calc(var(--sprite-sh) / 2);
+                /* Целевая высота спрайта (масштабирование) */
+                --sprite-ar: calc(var(--sprite-th) / var(--sprite-sh));
+                /* Соотношение сторон */
+                --sprite-uh: calc(var(--sprite-h) * var(--sprite-ar));
+                /* Масштабированная высота */
+                --sprite-uw: calc(var(--sprite-w) * var(--sprite-ar));
+                /* Масштабированная ширина */
+                --sprite-tw: calc(var(--sprite-uw) / var(--sprite-c));
+                /* Целевая ширина спрайта */
 
                 > h1 {
-                    color: #d2d4e1;
+                    /* ИЗМЕНЕНИЕ 3: Стиль заголовка для темного фона и новогодней атмосферы */
+                    color: #fce29d; /* Золотисто-желтый цвет */
                     margin: 0;
                     width: fit-content;
-                    font-weight: 500;
-                    font-size: 1.75rem;
+                    font-weight: 700;
+                    font-size: 2.2rem; 
                     text-align: center;
+                    letter-spacing: 0.1rem;
+                    /* Эффект свечения, подходящий для темного фона */
+                    text-shadow: 0 0 8px rgba(255, 255, 255, 0.7), 0 0 15px #fce29d;
+                    padding-bottom: 15px;
+                    border-bottom: 3px solid #fce29d; /* Золотистый разделитель */
                 }
 
                 .book {
@@ -126,12 +162,15 @@
                         background-repeat: no-repeat;
                         background-size: calc(1px * var(--sprite-uw)) calc(1px * var(--sprite-uh));
                         z-index: -1;
-
                         --sprite-fe: calc(var(--sprite-f) * (var(--slides) - 1)); /* Конечная позиция кадра */
-                        --sprite-fs-n: mod(var(--sprite-fs), var(--sprite-f)); /* Нормализованный старт кадра */
-                        --row: calc(round(down, calc(calc(var(--sprite-tw) * var(--sprite-fs-n)) / var(--sprite-uw)), 1) * var(--sprite-th)); /* Ряд кадра */
-                        --col: mod(calc(var(--sprite-tw) * var(--sprite-fs-n)), var(--sprite-uw)); /* Колонка кадра */
-                        background-position: calc(-1px * var(--col)) calc(-1px * var(--row)); /* Позиция фона для отображения нужного кадра */
+                        --sprite-fs-n: mod(var(--sprite-fs), var(--sprite-f));
+                        /* Нормализованный старт кадра */
+                        --row: calc(round(down, calc(calc(var(--sprite-tw) * var(--sprite-fs-n)) / var(--sprite-uw)), 1) * var(--sprite-th));
+                        /* Ряд кадра */
+                        --col: mod(calc(var(--sprite-tw) * var(--sprite-fs-n)), var(--sprite-uw));
+                        /* Колонка кадра */
+                        background-position: calc(-1px * var(--col)) calc(-1px * var(--row));
+                        /* Позиция фона для отображения нужного кадра */
 
                         animation: frame var(--sprite-as) var(--sprite-at) 0s var(--sprite-ad) var(--sprite-af) var(--sprite-ap);
                         animation-timeline: --carousel-timeline; /* Привязка анимации к таймлайну прокрутки */
@@ -148,7 +187,8 @@
                         width: calc(1px * (var(--sprite-tw) * 0.7042));
                         height: calc(1px * (var(--sprite-th) * 0.6107));
                         grid: 1fr / auto-flow 100%;
-                        scroll-timeline: --carousel-timeline x; /* Определение таймлайна прокрутки */
+                        scroll-timeline: --carousel-timeline x;
+                        /* Определение таймлайна прокрутки */
                         scroll-behavior: smooth;
                         scrollbar-width: none;
 
@@ -163,12 +203,13 @@
                         }
 
                         &::scroll-button(*):disabled {
-                            filter: invert(1);
+                            /* Изменение: с учетом светлого фона, убираем инверсию */
+                            filter: brightness(0.5); 
                             opacity: 0.5;
                         }
 
                         &::scroll-button(*):not(:disabled):is(:hover, :active) {
-                            filter: drop-shadow(2px 4px 6px black);
+                            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
                         }
 
                         &::scroll-button(*):not(:disabled):active {
@@ -176,12 +217,14 @@
                         }
 
                         &::scroll-button(left) {
+                            /* Кнопки теперь светлые, чтобы видно было на темном фоне */
                             content: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMjMyLjAwMDAwMCAyNTYuMDAwMDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBtZWV0IiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdHJhbnNmb3JtPSJtYXRyaXgoLTEsMCwwLDEsMCwwKSI+Cgo8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLjAwMDAwMCwyNTYuMDAwMDAwKSBzY2FsZSgwLjEwMDAwMCwtMC4xMDAwMDApIiBmaWxsPSIjZmZmIiBzdHJva2U9Im5vbmUiPgo8cGF0aCBkPSJNMTE4MCAyMTEwIGwwIC0xODAgLTU0MCAwIC01NDAgMCAwIC03MjUgMCAtNzI1IDU0MCAwIDU0MCAwIDAgLTE4MCAwIC0xODAgMTIwIDAgMTIwIDAgMCA2MCAwIDYwIDYwIDAgNjAgMCAwIDYwIDAgNjAgNjAgMCA2MCAwIDAgNjAgMCA2MCA2MCAwIDYwIDAgMCA2MCAwIDYwIDYwIDAgNjAgMCAwIDYwIDAgNjAgNjAgMCA2MCAwIDAgNjAgMCA2MCA2MCAwIDYwIDAgMCA1MyBjMCAyOSA1IDU4IDEyIDY1IDcgNyAzNCAxMiA2MCAxMiBsNDggMCAwIDIzNSAwIDIzNSAtNjAgMCAtNjAgMCAwIDY1IDAgNjUgLTQ3IDAgYy02OCAwIC03NSAtNyAtNzEgLTcxIGwzIC01NCA1OCAtMyA1NyAtMyAwIC0xMTkgMCAtMTIwIC01NSAwIC01NCAwIC0zIC01NyAtMyAtNTggLTYwIC01IC02MCAtNSAtMyAtNTcgLTMgLTU3IC01NyAtMyAtNTcgLTMgLTMgLTU3IC0zIC01NyAtNTcgLTMgLTU3IC0zIC0zIC01NyAtMyAtNTcgLTU3IC0zIC01NyAtMyAtMyAtNTcgLTMgLTU3IC01NyAtMyAtNTcgLTMgLTMgLTU4IC0zIC01OCAtNTcgMyAtNTcgMyAtMyAxNzggLTIgMTc3IC01NDAgMCAtNTQwIDAgMiA0ODMgMyA0ODIgNTM3IDMgNTM2IDIgNyAzMiBjNCAxNyA2IDk3IDQgMTc3IGwtNCAxNDYgNTggMyA1NyAzIDAgLTYxIDAgLTYwIDYwIDAgNjAgMCAwIC02MCAwIC02MCA2MCAwIDYwIDAgMCA2MCAwIDYwIC02MCAwIC02MCAwIDAgNjAgMCA2MCAtNjAgMCAtNjAgMCAwIDYwIDAgNjAgLTYwIDAgLTYwIDAgMCA2MCAwIDYwIC02MCAwIC02MCAwIDAgNjAgMCA2MCAtNjAgMCAtNjAgMCAwIDYwIDAgNjAgLTEyMCAwIC0xMjAgMCAwIC0xODB6Ij48L3BhdGg+CjwvZz4KPC9zdmc+") / "Scroll Left";
                             grid-area: left;
                         }
 
                         &::scroll-button(right) {
-                            content: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMCIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMjMyLjAwMDAwMCAyNTYuMDAwMDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBtZWV0Ij4KCjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAuMDAwMDAwLDI1Ni4wMDAwMDApIHNjYWxlKDAuMTAwMDAwLC0wLjEwMDAwMCkiIGZpbGw9IiNmZmYiIHN0cm9rZT0ibm9uZSI+CjxwYXRoIGQ9Ik0xMTgwIDIxMTAgbDAgLTE4MCAtNTQwIDAgLTU0MCAwIDAgLTcyNSAwIC03MjUgNTQwIDAgNTQwIDAgMCAtMTgwIDAgLTE4MCAxMjAgMCAxMjAgMCAwIDYwIDAgNjAgNjAgMCA2MCAwIDAgNjAgMCA2MCA2MCAwIDYwIDAgMCA2MCAwIDYwIDYwIDAgNjAgMCAwIDYwIDAgNjAgNjAgMCA2MCAwIDAgNjAgMCA2MCA2MCAwIDYwIDAgMCA2MCAwIDYwIDYwIDAgNjAgMCAwIDUzIGMwIDI5IDUgNTggMTIgNjUgNyA3IDM0IDEyIDYwIDEyIGw0OCAwIDAgMjM1IDAgMjM1IC02MCAwIC02MCAwIDAgNjUgMCA2NSAtNDcgMCBjLTY4IDAgLTc1IC03IC03MSAtNzEgbDMgLTU0IDU4IC0zIDU3IC0zIDAgLTExOSAwIC0xMjAgLTU1IDAgLTU0IDAgLTMgLTU3IC0zIC01OCAtNjAgLTUgLTYwIC01IC0zIC01NyAtMyAtNTcgLTU3IC0zIC01NyAtMyAtMyAtNTcgLTMgLTU3IC01NyAtMyAtNTcgLTMgLTMgLTU3IC0zIC01NyAtNTcgLTMgLTU3IC0zIC0zIC01NyAtMyAtNTcgLTU3IC0zIC01NyAtMyAtMyAtNTggLTMgLTU4IC01NyAzIC01NyAzIC0zIDE3OCAtMiAxNzcgLTU0MCAwIC01NDAgMCAyIDQ4MyAzIDQ4MiA1MzcgMyA1MzYgMiA3IDMyIGM0IDE3IDYgOTcgNCAxNzcgbC00IDE0NiA1OCAzIDU3IDMgMCAtNjEgMCAtNjAgNjAgMCA2MCAwIDAgLTYwIDAgLTYwIDYwIDAgNjAgMCAwIC02MCAwIC02MCA2MCAwIDYwIDAgMCA2MCAwIDYwIDYwIDAgNjAgMCAwIDYwIDAgNjAgLTYwIDAgLTYwIDAgMCA2MCAwIDYwIC02MCAwIC02MCAwIDAgNjAgMCA2MCAtNjAgMCAtNjAgMCAwIDYwIDAgNjAgLTYwIDAgLTYwIDAgMCA2MCAwIDYwIC02MCAwIC02MCAwIDAgNjAgMCA2MCAtMTIwIDAgLTEyMCAwIDAgLTE4MHoiLz4KPC9nPgo8L3N2Zz4=") / "Scroll Right";
+                            /* Кнопки теперь светлые, чтобы видно было на темном фоне */
+                            content: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMCIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMjMyLjAwMDAwMCAyNTYuMDAwMDAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBtZWV0Ij4KCjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAuMDAwMDAwLDI1Ni4wMDAwMDApIHNjYWxlKDAuMTAwMDAwLC0wLjEwMDAwMCkiIGZpbGw9IiNmZmYiIHN0cm9rZT0ibm9uZSI+CjxwYXRoIGQ9Ik0xMTgwIDIxMTAgbDAgLTE4MCAtNTQwIDAgLTU0MCAwIDAgLTcyNSAwIC03MjUgNTQwIDAgNTQwIDAgMCAtMTgwIDAgLTE4MCAxMjAgMCAxMjAgMCAwIDYwIDAgNjAgNjAgMCA2MCAwIDAgNjAgMCA2MCA2MCAwIDYwIDAgMCA2MCAwIDYwIDYwIDAgNjAgMCAwIDYwIDAgNjAgNjAgMCA2MCAwIDAgNjAgMCA2MCA2MCAwIDYwIDAgMCA2MCAwIDYwIDYwIDAgNjAgMCAwIDUzIGMwIDI5IDUgNTggMTIgNjUgNyA3IDM0IDEyIDYwIDEyIGw0OCAwIDAgMjM1IDAgMjM1IC02MCAwIC02MCAwIDAgNjUgMCA2NSAtNDcgMCBjLTY4IDAgLTc1IC03IC03MSAtNzEgbDMgLTU0IDU4IC0zIDU3IC0zIDAgLTExOSAwIC0xMjAgLTU1IDAgLTU0IDAgLTMgLTU3IC0zIC01OCAtNjAgLTUgLTYwIC01IC0zIC01NyAtMyAtNTcgLTU3IC0zIC01NyAtMyAtMyAtNTcgLTMgLTU3IC01NyAtMyAtNTcgLTMgLTMgLTU3IC0zIC01NyAtNTcgLTMgLTU3IC0zIC0zIC01NyAtMyAtNTcgLTU3IC0zIC01NyAtMyAtMyAtNTggLTMgLTU4IC01NyAzIC01NyAzIC0zIDE3OCAtMiAxNzcgLTU0MCAwIC01NDAgMCAyIDQ4MyAzIDQ4MiA1MzcgMyA1MzYgMiA3IDMyIGM0IDE3IDYgOTcgNCAxNzcgbC00IDE0NiA1OCAzIDU3IDMgMCAtNjEgMCAtNjAgNjAgMCA2MCAwIDAgLTYwIDAgLTYwIDYwIDAgNjAgMCAwIC02MCAwIC02MCA2MCAwIDYwIDAgMCA2MCAwIDYwIDYwIDAgNjAgMCAwIDYwIDAgNjAgLTYwIDAgLTYwIDAgMCA2MCAwIDYwIC02MCAwIC02MCAwIDAgNjAgMCA2MCAtNjAgMCAtNjAgMCAwIDYwIDAgNjAgLTEyMCAwIC0xMjAgMCAwIC0xODB6Ii8+CjwvZz4KPC9zdmc+") / "Scroll Right";
                             grid-area: right;
                             justify-self: flex-end;
                         }
@@ -195,11 +238,11 @@
                             display: grid;
                             position: absolute;
                             grid-area: markers;
-                            grid-auto-flow: column;
                             place-self: center;
                             overflow: hidden;
-                            border: 1px solid #000;
-                            background: linear-gradient(90deg, #f1e2b2 0%) no-repeat left center;
+                            border: 1px solid #9c9c9c; /* Более мягкий цвет рамки прогресса */
+                            /* ИЗМЕНЕНИЕ: Более мягкий желтый цвет прогресса */
+                            background: linear-gradient(90deg, #fce29d 0%) no-repeat left center;
                             --_progress: calc(calc(100 / var(--slides)) * 1%);
                             background-size: var(--_progress, 20%) 100%;
                             animation: progress linear both;
@@ -212,10 +255,11 @@
                             animation: count-before linear forwards;
                             animation-range: exit;
                             counter-increment: page;
-                            animation-timeline: view(x); /* Привязка к виду для подсчета страниц */
+                            animation-timeline: view(x);
+                            /* Привязка к виду для подсчета страниц */
                             position: relative;
                             box-sizing: border-box;
-                            color: #333;
+                            color: #4d4033; /* Теплый сепия для текста страницы */
 
                             &::scroll-marker {
                                 content: '';
@@ -249,10 +293,16 @@
                                 overflow: hidden;
                                 display: grid;
                                 grid-template-rows: 1fr auto;
+                                /* Фон для "старой бумаги" (оставляем теплым) */
+                                background-color: #fff7e6; 
+                                /* Более выраженная мягкая внутренняя тень */
+                                box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2); 
+                                border: 1px solid #c2b59b; /* Теплая рамка */
 
                                 &:after {
                                     bottom: 15px;
-                                    color: hsl(45.71deg 69.23% 30%);
+                                    /* Цвет номера страницы */
+                                    color: #4d4033; 
                                 }
 
                                 > div {
@@ -265,7 +315,8 @@
                             }
 
                             .left-page {
-                                padding: 20px 0 20px 20px;
+                                padding: 20px 0 
+                                20px 20px;
 
                                 &:after {
                                     content: counter(curpage);
@@ -284,6 +335,7 @@
                         }
                     }
                 }
+          
             }
         }
 
@@ -291,7 +343,6 @@
         @media (width < 748px) {
             .container {
                 --sprite-th: calc(var(--sprite-sh) / 2.5);
-
                 > h1 {
                     font-size: 1.25rem;
                 }
@@ -307,7 +358,6 @@
         @media (width < 560px) {
             .container {
                 --sprite-th: calc(var(--sprite-sh) / 4);
-
                 > h1 {
                     font-size: 1rem;
                 }
@@ -382,47 +432,55 @@
                 animation: none;
             }
         }
-        /* === Стили для снега === */
+        /* === Стили для снега (оставлены как были, но теперь видны на темном фоне) === */
 .snowflakes-container {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Позволяет кликать сквозь снег */
-    z-index: 1000; /* Высокий z-index, но ниже загрузочного экрана */
+    pointer-events: none;
+    /* Позволяет кликать сквозь снег */
+    z-index: 1000;
+    /* Высокий z-index, но ниже загрузочного экрана */
     overflow: hidden;
 }
 .snowflake {
     position: absolute;
     width: 10px;
     height: 10px;
-    background-color: #fff;
+    /* ИЗМЕНЕНИЕ 4: Цвет снежинок (убедимся, что они видны на темном) */
+    background-color: rgba(255, 255, 255, 0.9); 
     border-radius: 50%;
     opacity: 6;
     filter: blur(1px);
     /* Анимация снега по диагонали */
     animation: fallDiagonal 10s linear infinite;
-}
+    }
 /* Для кастомных снежинок (изображений) */
 .snowflake.custom-snowflake {
-    width: 20px; /* Базовый размер */
+    width: 20px;
+    /* Базовый размер */
     height: 20px;
     /* Убираем все стили, связанные с фоном */
-    background: none !important; /* Гарантируем отсутствие фона */
+    background: none !important;
+    /* Гарантируем отсутствие фона */
     border: none;
     padding: 0;
     margin: 0;
-}
+    }
 .snowflake.custom-snowflake img {
     width: 100%;
     height: 100%;
-    display: block; /* Убираем возможные отступы */
-    image-rendering: pixelated; /* Если нужно сохранить пиксельный стиль */
+    display: block;
+    /* Убираем возможные отступы */
+    image-rendering: pixelated;
+    /* Если нужно сохранить пиксельный стиль */
     /* Ключевая строка: гарантируем прозрачность */
     background: transparent !important;
     /* Дополнительно: если изображение всё равно показывает белый фон, можно попробовать это */
-    mix-blend-mode: screen; /* Это может помочь, но иногда создает странные эффекты */
+    mix-blend-mode: screen;
+    /* Это может помочь, но иногда создает странные эффекты */
 }
 @keyframes fallDiagonal {
     0% {
@@ -440,133 +498,149 @@
 <body>
     <div class="container">
         <h1>
-            Тестовый <span style="color: #f840a8; text-decoration: underline">Дневник</span> С Описанием И Словами<span style="color: #f840a8; text-decoration: underline">Чего Либо</span>
+            Дневничек с коментириями и рассказами
         </h1>
         <div class="sprite-wrapper">
             <div class="book">
-                <!--  Контейнер карусели -->
                 <div class="carousel" style="--slides: 4;">
-                    <!--  Спрайт фона -->
                     <div class="sprite"></div>
-                    <!--  Элементы карусели -->
                     <div class="carousel-item">
                         <div class="page-container">
                             <div class="page left-page">
                                 <div>
+     
                                     <p style="margin: 0; text-indent: 1rem">
-                                        🧩 Это Дневник для записей и просто слов которые должны были быть в моменте разработки или в конце разработки сайта. На данный момент все осталось как есть и пока или вовсе не будет обновляться, возможно в будущем, но сейчас нет, поэтому это сырая версия которая неадекватно адаптариванная под вид для мобильных устройств выглядить будет так, поэтому лучше включить просмотр как с пк в браузера или посмотреть с ноутбука, с ноутбука работает это лучше всего. А так, все на глазах.</p>
+                                        Первое что хочеться наверное сказать, так это что я не бросил это дело и иногда сажусь что нибудь придумать, посмотреть, узнать, написать и рассказать о чем то. Даже если это не читаеться и по сути сайт может висеть просто так, то мне просто в вайб чем то заняться вроде этого</p>
                                     <img src="https://assets.codepen.io/36869/brilliant.gif" alt="Brilliant" style="width: 100%; display: block; margin-top: 1rem;">
                                 </div>
+                    
                             </div>
                             <div class="page right-page">
                                 <div>
+                              
                                     <p style="margin: 0; text-indent: 1rem">
-                                        🚀 Основные идеи, мысли:
+                                        Что рассказать по поводу проекта?
+                                    </p>
+           
+                                    <p style="margin: 0; text-indent: 1rem">
+                                        Я доволен тем что выходит и тем что я меняю, не смотря на эту "Мобильную адаптацию", которую я не могу починить, поэтому что используем для этого сайта? Правильно - ноутбук
+               
                                     </p>
                                     <p style="margin: 0; text-indent: 1rem">
-                                        Каждая комната должна была прям запидоренная быть, все продумал, только не продумал что это будет очень тяжело
-                                    </p>
-                                    <p style="margin: 0; text-indent: 1rem">
-                                       В целом я доволен даже тем что сделал, по сколько это и так довольно хорошо выглядит с пк версии, но  с мобилок я не знаю что делать. Так же редактировать этот текст без ошибок я не знаю буду ли, что вряд-ли поэтому..
+                                       
+                                        А так все вышло как есть, где можно просто занять себя чем то, а где просто почитать. Не хочется добавлять или было добавлять одного и того же, поэтому разработка часто бывает затягиваеться в каких либо аспектов, а если и не затягиваться, так просто нет настроения. Так бывает, со всеми, поэтому с долгим временем сайт будет расти как ребенок на глазах.
                                     </p><br>
-                                    <p style="margin: 0; text-indent: 1rem">🔧 Что хотелось добавить и добавил:</p>
+                                    <p style="margin: 0; text-indent: 1rem">Что по комнатам?</p>
+     
                                     <ul style="padding: 0; list-style: auto; list-style-position: inside; margin: 0">
-                                        <li> Пятнашки были самым первой комнатой. Было еще много каких комнат но в итоге не добавил их</li>
-                                        <li>Далее музыкальный плеер, который стал отдельным, а должен был быть во всех комнатах</li>
-                                        <li>Идеи с погодой и дневником и кинотеатром были придуманы буквально вчера, но в реализацию ушло только два и то не доделал</li>
-                                        <li>Главное меню должно было быть другим, ты видел фотку с солнцем и луной, но в итоге я все поменял и меню выглядит так</li>
-                                    </ul><br>
-                                    <p style="margin: 0; text-indent: 1rem">
-                                        🧠 Динамическое поведение
-                                    </p>
-                                    <p style="margin: 0; text-indent: 1rem">
-                                        Все анимации автоматически корректируются при изменении количества слайдов через переменную --slides. Количество кадров, макет спрайта и общая продолжительность анимации адаптируются на основе пользовательских переменных CSS.
-                                        Анимация реагирует на прогресс прокрутки с помощью scroll-timeline и имеет область действия на элемент с помощью timeline-scope.
-                                    </p>
+                                    </p> Да ничего особо, по секретной комнате только в главном меню где надпись "Лиза?" ничего особо и не прятал. Возможно поставлю выбор вариантов для настроения темы. По типу под какой либо праздник как сейчас, а больше и не нужно?<br>
+                                    
                                 </div>
                             </div>
                         </div>
+                
                     </div>
                     <div class="carousel-item">
                         <div class="page-container">
                             <div class="page left-page">
+                    
                                 <div>
                                     <p style="margin: 0; text-indent: 1rem">
-                                        Пу пу пу..
+                                        Пасхалки пасхалками, но а что дальше?
+      
                                     </p>
                                     <p style="margin: 0; text-indent: 1rem">
-                                        Пасхалку которую ты могла не увидеть я добавил в главном меню в верхней панели навигации в тексте "Лиза?", если ты его не видела
+                              
+                                       Дальше естественно какое то развитие проекта если я не займусь другим, в остальном я всегда извещаю в обновлениях в главном меню.
                                     </p><br>
-                                    <p style="margin: 0; text-indent: 1rem">Нужно ли оно мне было вообще? 🤔</p>
+                                
+                                    <p style="margin: 0; text-indent: 1rem">Немного историй о проекте...</p>
                                     <p style="margin: 0; text-indent: 1rem">
-                                        Прикольно это делать когда у тебя есть куча идей и сил на это. Есть ради чего и просто самому интересно больше понять как это сделать, как убрать то, добавить другое и так далее. Я не пожалел что я это все начал делать, лишь жалею что не могу закончить. Изначально думал сделать для тебя просто как жест внимание, после это хотелось просто быть как поддержка для твого состояния, сейчас это просто мои слова что я любил тебя и тогда и сейчас, хоть может моментами это скудно видно, либо же не до этого или еще как либо
+                                       Интересное дело это програмировать. Точнее интересное пока ты вручную все это не допиливаешь. Это не питоны и С++ с джавой учить. Это просто легкое хобби для себя и возможно для тебя в каком то роде. Я не жду того что это возможно будет читаться и просматриваться моментами, поэтому считаю что я это все равно пишу как для себя так и саму себе, что бы читать что я думал и что было в голове когда я делал тот или иной аспект и вспомню как могу менять тему на тему. А что касаемо комнат, то это просто то что я делал по своим возможностям. Бывает моментами что хочу что то нереальное сделать, но глупо получается лепить глину и выдавать это за золото 🙃
                                     </p>
+                  
                                 </div>
                             </div>
                             <div class="page right-page">
+                            
                                 <div>
-                                    <p style="margin: 0; text-indent: 1rem">📦 Какие ачивки заработала за такое:</p>
+                                    <p style="margin: 0; text-indent: 1rem">📦 Может добавим ачивки?:</p>
                                     <p style="margin: 0;">
-                                        Умничка (Зайти на сайт)<br>
-                                        Сыщик (найти пасхалку с чатом)<br>
-                                        Натыканый (тыкнуть на все что можно)<br>
-                                        Котик с очками (В профиле нажать на "Ну тыкни")
+                                            Например..<br>
+
+                                            Умничка (зайти на сайт)<br>
+                                            Сыщик (найти пасхалку с чатом)<br>
+                                            Котик с очками (в профиле нажать на "Ну что, посмотришь на себя?")
+                                 
                                     </p><br>
-                                    <img src="https://assets.codepen.io/36869/pixel-cat.jpg" width="100%" alt="Pixel Cat" style="display: block; margin-top: 1rem;">
+                                    <img src="https://assets.codepen.io/36869/pixel-cat.jpg" width="100%" alt="Pixel Cat" style="display: block;
+                                    margin-top: 0rem;">
                                 </div>
                             </div>
                         </div>
+               
                     </div>
                     <div class="carousel-item">
                         <div class="page-container">
                             <div class="page left-page">
+                   
                                 <div>
-                                Со всего что я уже наговорил я просто скажу что делать такое было вайб и мне понравилось что получилось, это прикольно и интересно получилось, где то загорелся что бы все поменять кардинально, свойственно вот все и изменил, все должно было быть куда проще, но вышло так. Извини за то что я все так бросил, в будущем может все обновлю, но пока уже не могу, очень тяжело моментами поэтому пока с этим все. Я думал добавить свои голосовые сюда, очень много что планировал сюда добавить, но в итоге все кардинально изменилось и не вышло в итоговую версию. Я думал так же сделать совместно это, но я не думал что тебя накроет, поэтому в итоге ничего не получилось как хотелось
+                                Со всего остального что я уже сказал, поделился своим скромным мнением и рассказом, мог бы добавить что части для новелл не стоит ждать в кратчайшие сроки, но может быть и будет что нибудь интересное, по крайней мере у меня есть идея для первой части и есть немного заготовок и когда уже будет настроение напишу начало, сложу, заскриптую и выйдет итог. Не буду расскрывать детали, но на самом деле главное меню в выборах новелл уже говорит о жанре и мои слова тоже, так что поймешь, не глупышка же ты. В остальном лишь новогоднее настроение, настроение что то создать и просто что то либо рассказать, так что думаю что скоро можно будет переходить к теме о душевных разговорах.
                                 </div>
+      
                             </div>
                             <div class="page right-page">
                                 <div>
-                             Так же и она нас, как же не без этого да? Моментами очень много мыслей приходило что могло случиться, что не так, почему ничего не говоришь и почему именно со мной и все в этом роде. Просто все это в голове сидит. Сейчас же просто жду чего то, осень, настроение под него еще хуже, еще и у каждого куча проблем, выгораний, просто проблем о которых мы молчим и все в этом роде, много чего. Иногда кажется просто все уходит, иногда кажется что нет, все нормально, а иногда просто ничего не хочется и так постоянно. Сейчас же просто ничего не присходит. Те слова твои что бы я ушел от тебя грубо говоря и научился без тебя жить как то радости не прибавляет. Сказала снова я жду когда ты так скажешь и я выдохнув такой "Ура, новые отношения, новые эмоции!", угу, так это со мной не работает. В общем по поводу это всего я  просто хочу прокоментировать что я просто сижу жду как ты, лучше тебе или нет. Станет лучше, поговорим тогда, посидим, не станет, я подожду.
+                                    В целом по поводу них у меня мало каких либо коментариев, как раньше, по сколько мы и так знаем что присходит и я знал изначально и в целом предполагал изначально что может так случиться и как всегда об этом не договариваю, но в целом, если будут вопросы что именно предположил или знал, то ответов не будет. А так что сказать, ну без меня вроде как тебе не плохо. По крайней мере я заметил что все равно моментами мы с вайбом могли посидеть, не смотря на весь этот переплет, что меня шокировало. В моменте казалось что я как будто снова с тобой познакомился и в этом было что то свое. А так, в любом случае есть как есть. Если дойдет разговор до этого то поговорим об этом, но а так навязывать свое мнение о чем либо я не буду конечно. Холодность наверное, но просто в голове нет слов что то описывать.
                                 </div>
                             </div>
                         </div>
                     </div>
+                   
                     <div class="carousel-item">
                         <div class="page-container">
                             <div class="page left-page">
                                 <div>
-                                    В любом случае меня ничего больше не привлекает как ты. Так что если не хочешь или поменялось что то напиши, я всегда говорил что рядом и сейчас тоже, просто ты закрытая сейчас, очень и что то сделать мне для тебя нереально. Поэтому если хочешь поговорить, просто посидеть я рядом, а так, Люблю.
-                                </div>
+                                    В любом случае спасибо за то что посидела в этом сайте, почитала, узнала что то новое да и просто надеюсь хорошо провела время. Это было увлекательно я думаю и довольно необычно ибо кто так делает в наши года. Цветы, подарки и всякая другая чушь. А в этом хоть есть мысль что сюда силы вложили, хоть и непонятно насколько тяжкие. В любом случае если захочешь написать отзыв, то принимаю любую критику, не переживай! Ну а так, обнял 🙃
+                                    </div>
                             </div>
                             <div class="page right-page">
                                 <img src="../images/30.gif" width="100%" alt="Pixel Cat" style="display: block; margin-top: 1rem;">
+  
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+  
         </div>
     </div>
-        <!-- Контейнер для снега -->
-    <div class="snowflakes-container" id="snowContainer"></div>
+        <div class="snowflakes-container" id="snowContainer"></div>
     <script>         // === Скрипт для снега и звука ===
         document.addEventListener('DOMContentLoaded', function () {
             // Ждем, пока загрузочный экран исчезнет (если есть) или просто проходит 3.5 секунды
             setTimeout(() => {
+   
                 const snowContainer = document.getElementById('snowContainer');
                 const customImages = ['../images/34.png', '../images/35.png']; // Укажите пути к вашим PNG-изображениям
                 // --- Создание снежинок ---
                 // Обычные снежинки (круги)
-                for (let i = 0; i < 50; i++) {
+                for (let i 
+                = 0; i < 50; i++) {
                     const snowflake = document.createElement('div');
                     snowflake.classList.add('snowflake');
                     snowContainer.appendChild(snowflake);
                     // Случайные параметры для анимации
-                    const duration = 5 + Math.random() * 10; // 5-15 секунд
-                    const delay = Math.random() * 5; // 0-5 секунд задержки
-                    const size = 2 + Math.random() * 6; // 2-8 пикселей
-                    const startX = 100 + Math.random() * 170; // Начинают немного правее экрана
-                    const opacity = 0.5 + Math.random() * 0.5; // 0.5-1
+                    const duration = 5 + Math.random() * 10;
+                    // 5-15 секунд
+                    const delay = Math.random() * 5;
+                    // 0-5 секунд задержки
+                    const size = 2 + Math.random() * 6;
+                    // 2-8 пикселей
+                    const startX = 100 + Math.random() * 170;
+                    // Начинают немного правее экрана
+                    const opacity = 0.5 + Math.random() * 0.5;
+                    // 0.5-1
                     snowflake.style.left = `${startX}vw`;
                     snowflake.style.width = `${size}px`;
                     snowflake.style.height = `${size}px`;
@@ -577,7 +651,8 @@
                 for (let i = 0; i < 10; i++) {
                     const snowflake = document.createElement('div');
                     // Случайно выбираем изображение
-                    const imgClass = Math.random() > 0.5 ? 'custom-34' : 'custom-35';
+                    const imgClass = Math.random() > 0.5 ?
+                    'custom-34' : 'custom-35';
                     snowflake.classList.add('snowflake', 'custom-snowflake', imgClass);
                     snowContainer.appendChild(snowflake);
                     // Создаем элемент img
@@ -585,11 +660,16 @@
                     img.src = customImages[imgClass === 'custom-34' ? 0 : 1]; // Выбираем нужный URL
                     snowflake.appendChild(img);
                     // Случайные параметры для анимации и размера
-                    const duration = 6 + Math.random() * 12; // 6-18 секунд
-                    const delay = Math.random() * 5; // 0-5 секунд задержки
-                    const size = 10 + Math.random() * 36; // 10-40 пикселей
-                    const startX = 100 + Math.random() * 170; // Начинают немного правее экрана
-                    const opacity = 0.6 + Math.random() * 0.4; // 0.6-1
+                    const duration = 6 + Math.random() * 12;
+                    // 6-18 секунд
+                    const delay = Math.random() * 5;
+                    // 0-5 секунд задержки
+                    const size = 10 + Math.random() * 36;
+                    // 10-40 пикселей
+                    const startX = 100 + Math.random() * 170;
+                    // Начинают немного правее экрана
+                    const opacity = 0.6 + Math.random() * 0.4;
+                    // 0.6-1
                     snowflake.style.left = `${startX}vw`;
                     snowflake.style.width = `${size}px`;
                     snowflake.style.height = `${size}px`;
@@ -599,15 +679,19 @@
                 // --- Воспроизведение звука ---
                 const audio = document.createElement('audio');
                 audio.src = '../assets/music31.mp3'; // Укажите путь к вашему аудиофайлу
-                audio.loop = true; // Зацикливаем воспроизведение
-                audio.volume = 0.15; // Устанавливаем громкость (0.0 - 1.0)
+                audio.loop = true;
+                // Зацикливаем воспроизведение
+                audio.volume = 0.15;
+                // Устанавливаем громкость (0.0 - 1.0)
                 // Пытаемся воспроизвести звук (многие браузеры требуют взаимодействия пользователя)
                 // Поэтому воспроизводим после задержки и игнорируем ошибки
                 audio.play().catch(e => {
                     console.log("Автовоспроизведение звука заблокировано, будет воспроизводиться после взаимодействия пользователя.");
+   
                     // Если автовоспроизведение не сработало, можно попробовать по клику
                     document.body.addEventListener('click', function playAudioOnInteraction() {
                         audio.play().catch(e => console.error("Ошибка воспроизведения аудио:", e));
+                       
                         document.body.removeEventListener('click', playAudioOnInteraction);
                     });
                 });
