@@ -420,6 +420,95 @@
             }
         }
         /* === Конец стилей снега === */
+        /* ----------------------- МОБИЛЬНАЯ АДАПТАЦИЯ (MAX-WIDTH: 600px) ----------------------- */
+@media (max-width: 600px) {
+    
+    /* 1. Общий контейнер */
+    body {
+        /* Убираем overflow: hidden, чтобы не было проблем на мобильных */
+        overflow-y: auto; 
+    }
+
+    #room-container {
+        width: 100%;
+        max-width: 100%; /* Занимаем всю доступную ширину */
+        padding: 20px 10px; /* Уменьшаем внутренние отступы */
+        box-shadow: none; /* Убираем тяжелые тени на маленьких экранах */
+        border: none; /* Убираем рамку, чтобы контент был шире */
+    }
+    
+    /* Уменьшаем главный заголовок */
+    h1 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+    
+    /* Кнопка "Закрыть" */
+    #exit-button {
+        align-self: flex-start; /* Прижимаем к левому краю, чтобы было удобно */
+    }
+    
+    /* 2. Экран выбора карточек */
+    #selection-screen {
+        flex-direction: column; /* Карточки вертикально */
+        gap: 20px;
+        align-items: center;
+    }
+    
+    .game-card {
+        width: 90%; /* Занимаем почти всю ширину экрана */
+        max-width: 350px; /* Но не даем стать слишком широкой */
+        height: 400px; /* Чуть уменьшаем высоту */
+        border: 4px solid var(--primary-bg); /* Более тонкая рамка */
+        box-shadow: 3px 3px 10px var(--shadow-heavy);
+    }
+
+    /* 3. Экран деталей */
+    #detail-screen {
+        width: 100%; /* На всю ширину */
+        max-width: 100%;
+        padding: 20px;
+        box-shadow: none; 
+    }
+
+    .detail-flex {
+        flex-direction: column; /* Изображение и текст вертикально */
+        gap: 20px;
+    }
+
+    #detail-image {
+        width: 100%; /* Изображение на всю ширину */
+        max-height: 400px;
+        height: auto;
+        border: 2px solid var(--paper-color);
+    }
+    
+    #detail-title {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    #detail-description {
+        font-size: 0.9rem;
+    }
+
+    /* 4. Кнопки в деталях */
+    .detail-buttons {
+        flex-direction: column; /* Кнопки друг под другом */
+        gap: 10px;
+        margin-top: 30px;
+    }
+    
+    .action-button {
+        width: 100%; /* Растягиваем на всю ширину */
+        padding: 12px;
+    }
+    
+    /* 5. Экран "Играть" */
+    #play-screen {
+        font-size: 2.5rem; /* Уменьшаем текст */
+    }
+}
     </style>
 </head>
     <div class="snowflakes-container" id="snowContainer"></div>
