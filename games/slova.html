@@ -493,6 +493,82 @@
     }
 }
 /* === Конец стилей снега === */
+/************* «Живая» новогодняя кнопка «Назад» *************/
+.room-back-btn{
+    --gold:#fce29d;
+    --dark:#0f1626;
+
+    position:absolute;
+    top:1.2rem;
+    left:1.2rem;
+    z-index:10;
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:.55rem 1.3rem .5rem 2.4rem; /* место под «дверцу» слева */
+    font-family:inherit;
+    font-size:1rem;
+    font-weight:700;
+    color:var(--gold);
+    text-decoration:none;
+    letter-spacing:.04em;
+
+    background:
+        /* ёлочка */
+        linear-gradient(135deg, transparent 45%, var(--gold) 45% 55%, transparent 55% 100%),
+        /* фон */
+        radial-gradient(circle at 130% 50%, rgba(0,0,0,.25) 0%, transparent 60%),
+        var(--dark);
+    background-size:12px 12px, auto, auto;
+    background-position:12px center, 0 0, 0 0;
+    background-repeat:no-repeat;
+
+    border:2px solid var(--gold);
+    border-radius:.4rem;
+    box-shadow:
+        0 0 4px  var(--gold),
+        0 0 8px  var(--gold),
+        0 0 12px var(--gold),
+        inset 0 0 6px rgba(252,226,157,.15);
+
+    transform-origin:left center;
+    transform:perspective(600px) rotateY(-25deg) scale(.92);
+    transition:transform .25s ease, filter .25s ease;
+    animation: glow 2.2s ease-in-out infinite alternate;
+}
+
+/* «дверца» */
+.room-back-btn::before{
+    content:'';
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width:1.6rem;
+    background:linear-gradient(90deg, rgba(0,0,0,.35) 0%, transparent 100%);
+    border-right:1px solid rgba(252,226,157,.5);
+    border-radius:.4rem 0 0 .4rem;
+    transition:transform .25s ease;
+    transform-origin:left center;
+}
+
+.room-back-btn:hover{
+    transform:perspective(600px) rotateY(0deg) scale(1);
+    filter:brightness(1.15);
+}
+.room-back-btn:hover::before{
+    transform:rotateY(-70deg);
+}
+
+.room-back-btn:active{
+    transform:perspective(600px) rotateY(0deg) scale(.96);
+    filter:brightness(.95);
+}
+
+@keyframes glow{
+    0%   { box-shadow:0 0 4px var(--gold), 0 0 8px var(--gold), 0 0 12px var(--gold), inset 0 0 6px rgba(252,226,157,.15); }
+    100% { box-shadow:0 0 8px var(--gold), 0 0 16px var(--gold), 0 0 24px var(--gold), inset 0 0 10px rgba(252,226,157,.25); }
+}
+/************************************************************/
     </style>
 </head>
 <body>
@@ -500,6 +576,8 @@
         <h1>
             Дневничек с коментириями и рассказами
         </h1>
+        <!-- Кнопка «Назад» в стиле комнаты -->
+<a href="../index.html" class="room-back-btn">Назад</a>
         <div class="sprite-wrapper">
             <div class="book">
                 <div class="carousel" style="--slides: 4;">
@@ -591,7 +669,7 @@
                             </div>
                             <div class="page right-page">
                                 <div>
-                                    В целом по поводу них у меня мало каких либо коментариев, как раньше, по сколько мы и так знаем что присходит и я знал изначально и в целом предполагал изначально что может так случиться и как всегда об этом не договариваю, но в целом, если будут вопросы что именно предположил или знал, то ответов не будет. А так что сказать, ну без меня вроде как тебе не плохо. По крайней мере я заметил что все равно моментами мы с вайбом могли посидеть, не смотря на весь этот переплет, что меня шокировало. В моменте казалось что я как будто снова с тобой познакомился и в этом было что то свое. А так, в любом случае есть как есть. Если дойдет разговор до этого то поговорим об этом, но а так навязывать свое мнение о чем либо я не буду конечно. Холодность наверное, но просто в голове нет слов что то описывать.
+                                    А касаемо душевных разговоров то коментировать как то и нечего. Вообще, кстати, забыл сказать что некоторые части по типу как пасхалки не менялись с сентябырьских или октябырьских времемен, поэтому не удивляемся вдруг чего. Этот текст вот который тут. Прям тут, я пальцем тыкаю. Вот он обновлен сегодня (25 декабря), вот. Так что, что то затронул, что то нет и вот так вот все делается. Ну в любом случае я предупредил, так что вдруг чего знаем. Что опять же новвел, которые я надумал сделать, то все довольно не однозначно, поэтому и написал что это тест. Сейчас по крайней мере за это браться нет сил, поэтому если и будет, то круто, а если нет, то обидно, но как идея на будущее будет неплохая. В любом случае дальше будет видно, но пока что настроения, что сил, что в каком то роде времени не хватает, поэтому да. 
                                 </div>
                             </div>
                         </div>
