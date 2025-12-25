@@ -277,78 +277,7 @@
     filter: blur(12px); /* Применяем размытие (можно изменить значение 2px) */
 }
 /* === Конец стилей елки === */
-/* ===== мобильные настройки ===== */
-.mob-settings-btn{
-  display:none;                 /* на десктопе не нужна */
-}
-@media (max-width: 768px){
-  .mobile-auth-buttons{         /* убираем старые кнопки */
-    display:flex;
-    align-items:center;
-  }
-  .mobile-auth-buttons .auth-btn{
-    display:none;
-  }
-  .mob-settings-btn{
-    display:flex;               /* квадратик 40×40 */
-    width:40px;
-    height:40px;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    gap:4px;
-    background:#fff7e6;
-    border:1px solid #c2b59b;
-    border-radius:6px;
-    cursor:pointer;
-    box-shadow:0 2px 6px rgba(0,0,0,.25);
-  }
-  .mob-settings-btn span{
-    width:22px;
-    height:3px;
-    background:#4d4033;
-    border-radius:2px;
-    transition:.25s;
-  }
-  .mob-settings-btn.active span:nth-child(1){
-    transform:translateY(7px) rotate(45deg);
-  }
-  .mob-settings-btn.active span:nth-child(2){
-    opacity:0;
-  }
-  .mob-settings-btn.active span:nth-child(3){
-    transform:translateY(-7px) rotate(-45deg);
-  }
 
-  /* выпадающий бар */
-  .mob-settings-bar{
-    position:absolute;
-    top:100%;                   /* прямо под кнопкой */
-    left:0;
-    right:0;
-    background:#fff7e6;
-    border:1px solid #c2b59b;
-    border-top:none;
-    display:flex;
-    flex-direction:column;
-    max-height:0;
-    overflow:hidden;
-    transition:max-height .3s ease;
-  }
-  .mob-settings-bar.show{
-    max-height:120px;
-  }
-  .mob-settings-bar a{
-    padding:10px 20px;
-    color:#4d4033;
-    text-decoration:none;
-    border-bottom:1px solid rgba(77,64,51,.1);
-  }
-  .mob-settings-bar a:last-child{
-    border-bottom:none;
-  }
-}
-/* ===== /мобильные настройки ===== */
     </style>
 </head>
 <body>
@@ -392,14 +321,6 @@
             </div>
             <button class="menu-toggle">☰</button>
             <div class="mobile-auth-buttons">
- <!-- внутри .mobile-auth-buttons -->
-<button class="mob-settings-btn" id="mobSettingsBtn" aria-label="Настройки">
-  <span></span><span></span><span></span>
-</button>
-<nav class="mob-settings-bar" id="mobSettingsBar">
-  <a href="games/pupupu.html">пустышка</a>
-  <a href="games/pupupu.html">не работает</a>
-</nav>
             </div>
         </div>
     </nav>
@@ -615,13 +536,6 @@
 
             }, 3500); // 3500 миллисекунд = 3.5 секунды
         });
-/* мобильная шторка настроек */
-const btn  = document.getElementById('mobSettingsBtn');
-const bar  = document.getElementById('mobSettingsBar');
-btn.addEventListener('click', () => {
-  btn.classList.toggle('active');
-  bar.classList.toggle('show');
-});
     </script>
         <!-- Фиксированная елка в левом нижнем углу -->
     <div class="fixed-tree">
