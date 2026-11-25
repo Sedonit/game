@@ -1,0 +1,160 @@
+/* =======================================================================
+   room-effects.css — общие эффекты и мобильная оптимизация для комнат.
+   Подключается на всех страницах (главная + games/*).
+   ======================================================================= */
+
+/* ---------- Снег ---------- */
+.re-snow,
+.snowflakes-container.re-snow {
+    position: fixed;
+    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1000;
+    contain: strict;
+}
+
+.re-flake {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--re-size, 4px);
+    height: var(--re-size, 4px);
+    border-radius: 50%;
+    background: #fff;
+    opacity: var(--re-op, 0.7);
+    transform: translate3d(var(--re-x, 50vw), -12vh, 0);
+    animation: re-fall var(--re-dur, 10s) linear var(--re-delay, 0s) infinite;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.re-flake--img {
+    border-radius: 0;
+    background: transparent var(--re-img) center / contain no-repeat;
+}
+
+.re-snow.is-paused .re-flake {
+    animation-play-state: paused;
+}
+
+@keyframes re-fall {
+    0% {
+        transform: translate3d(var(--re-x, 50vw), -12vh, 0);
+    }
+    100% {
+        transform: translate3d(calc(var(--re-x, 50vw) - 28vw), 112vh, 0);
+    }
+}
+
+/* ---------- Кнопка звука ---------- */
+.re-sound-btn {
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    width: 46px;
+    height: 46px;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 50%;
+    background: rgba(26, 26, 26, 0.82);
+    color: #fff;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 1001;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.re-sound-btn:hover {
+    background: rgba(45, 45, 45, 0.92);
+    transform: translateY(-1px);
+}
+
+.re-sound-btn:active {
+    transform: scale(0.94);
+}
+
+/* =======================================================================
+   Мобильная оптимизация
+   ======================================================================= */
+@media (max-width: 768px) {
+    html {
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    /* Картинки не должны вылезать за экран и рвать вёрстку */
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Дорогие размытия на телефоне отключаем — заметно экономит CPU/GPU */
+    .re-sound-btn {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Снег на мобильных чуть меньше и без размытия */
+    .re-flake {
+        filter: none !important;
+    }
+
+    /* Удобные тач-цели для интерактивных элементов комнат */
+    button,
+    .back-button,
+    .back-btn,
+    .clickable-text,
+    a.auth-btn {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Не даём длинным словам/ссылкам ломать ширину */
+    .section-content,
+    .room-container,
+    .game-container {
+        overflow-wrap: anywhere;
+    }
+}
+
+@media (max-width: 480px) {
+    .re-sound-btn {
+        width: 42px;
+        height: 42px;
+        right: max(12px, env(safe-area-inset-right));
+        bottom: max(12px, env(safe-area-inset-bottom));
+    }
+}
+
+/* Уважаем настройку «уменьшить движение» */
+@media (prefers-reduced-motion: reduce) {
+    .re-flake {
+        animation: none !important;
+        display: none !important;
+    }
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+    }
+}
