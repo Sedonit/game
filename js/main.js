@@ -198,9 +198,256 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function resumePageEffects() {
         if (window.RoomEffects) {
-            window.RoomEffects.resumeMusic();
+            // Если из плеера переехала своя музыка — музыку меню не включаем,
+            // даже когда она стоит на паузе (управление у мини-плеера).
+            if (!bgTrack) {
+                window.RoomEffects.resumeMusic();
+            }
             window.RoomEffects.resumeSnow();
         }
+    }
+
+    // === Фоновая музыка из плеера: продолжает играть после закрытия хаба ===
+    const bgAudio = new Audio();
+    bgAudio.preload = 'auto';
+
+    const bgPlayerEl = document.getElementById('bgPlayer');
+    const bgCoverEl = document.getElementById('bgCover');
+    const bgTitleEl = document.getElementById('bgTitle');
+    const bgArtistEl = document.getElementById('bgArtist');
+    const bgToggleEl = document.getElementById('bgToggle');
+    const bgStopEl = document.getElementById('bgStop');
+    const bgPrevEl = document.getElementById('bgPrev');
+    const bgNextEl = document.getElementById('bgNext');
+
+    // Плейлист общий с плеером (js/music-playlist.js) — чтобы кнопки переключения
+    // и автопереход работали прямо из меню.
+    const bgPlaylist = (window.MUSIC_TRACKS || []).map(function (track) {
+        return {
+            src: new URL(track.src, window.location.href).href,
+            title: track.title,
+            artist: track.artist,
+            cover: track.cover ? new URL(track.cover, window.location.href).href : ''
+        };
+    });
+
+    let bgTrack = null;
+    let bgWanted = false;
+    let bgPausedByHub = false;
+    let lastMusicState = null;
+    let pendingHandoff = null;
+    // Что играло в мини-плеере до того, как мы заглушили его в рассказе/новеллах.
+    let stoppedSnapshot = null;
+    let lastBgSave = 0;
+    let playerAudioStarted = false;
+
+    // Позицию мини-плеера тоже запоминаем в localStorage: если музыку выключат
+    // в рассказе/новеллах, при возврате в плеер трек продолжится с того же места.
+    function saveBgSnapshot() {
+        if (!bgTrack || !bgTrack.src) return;
+        try {
+            localStorage.setItem('playerSrc_minesweeper', bgTrack.src);
+            localStorage.setItem('playerTime_minesweeper', String(bgAudio.currentTime || 0));
+            localStorage.setItem('playerPlaying_minesweeper', bgWanted ? 'true' : 'false');
+            const index = bgIndexBySrc(bgTrack.src);
+            if (index >= 0) {
+                localStorage.setItem('playerCurrentTrack_minesweeper', String(index));
+            }
+        } catch (err) { /* игнорируем */ }
+    }
+
+    function bgIndexBySrc(src) {
+        if (!src) return -1;
+        for (let i = 0; i < bgPlaylist.length; i++) {
+            if (bgPlaylist[i].src === src) return i;
+        }
+        return -1;
+    }
+
+    // Ставим трек из плейлиста мини-плеера (с автозапуском).
+    function playBgTrack(index) {
+        if (!bgPlaylist.length) return;
+        const count = bgPlaylist.length;
+        const i = ((index % count) + count) % count;
+        const track = bgPlaylist[i];
+
+        bgTrack = {
+            src: track.src,
+            title: track.title,
+            artist: track.artist,
+            cover: track.cover
+        };
+        bgWanted = true;
+        bgPausedByHub = false;
+
+        if (bgAudio.getAttribute('src') !== track.src) {
+            bgAudio.setAttribute('src', track.src);
+            bgAudio.load();
+        }
+
+        const playPromise = bgAudio.play();
+        if (playPromise && playPromise.catch) playPromise.catch(function () {});
+
+        if (window.RoomEffects) window.RoomEffects.pauseMusic();
+        saveBgSnapshot();
+        updateBgUi();
+    }
+
+    // Переключение на соседний трек плейлиста (прошлый / следующий).
+    function stepBgTrack(delta) {
+        if (!bgPlaylist.length) return;
+        const current = bgIndexBySrc(bgTrack && bgTrack.src);
+        playBgTrack(current < 0 ? 0 : current + delta);
+    }
+
+    function updateBgUi() {
+        const active = !!bgTrack;
+        document.body.classList.toggle('has-bg-music', active);
+        if (!bgPlayerEl) return;
+        bgPlayerEl.hidden = !active;
+        if (!active) return;
+
+        if (bgCoverEl) {
+            if (bgTrack.cover) bgCoverEl.src = bgTrack.cover;
+            else bgCoverEl.removeAttribute('src');
+        }
+        if (bgTitleEl) bgTitleEl.textContent = bgTrack.title;
+        if (bgArtistEl) bgArtistEl.textContent = bgTrack.artist;
+
+        const playing = !bgAudio.paused;
+        if (bgToggleEl) {
+            bgToggleEl.textContent = playing ? '⏸' : '▶';
+            bgToggleEl.setAttribute('aria-label', playing ? 'Пауза' : 'Включить музыку');
+        }
+    }
+
+    function startBgMusic(state) {
+        if (!state || !state.src) return;
+
+        const volume = typeof state.volume === 'number' ? state.volume : 0.4;
+        const seek = typeof state.time === 'number' && isFinite(state.time) ? state.time : 0;
+
+        bgTrack = {
+            src: state.src,
+            title: state.title || 'Музыка',
+            artist: state.artist || '',
+            cover: state.cover || ''
+        };
+        bgWanted = true;
+        bgPausedByHub = false;
+
+        bgAudio.volume = Math.max(0, Math.min(1, volume));
+        if (bgAudio.src !== state.src) {
+            bgAudio.setAttribute('src', state.src);
+            bgAudio.load();
+        }
+
+        if (bgAudio.readyState >= 1) {
+            try { bgAudio.currentTime = seek; } catch (err) { /* игнорируем */ }
+        } else {
+            bgAudio.addEventListener('loadedmetadata', function () {
+                try { bgAudio.currentTime = seek; } catch (err) { /* игнорируем */ }
+            }, { once: true });
+        }
+
+        // play() вызываем сразу в обработчике клика — иначе браузер может заблокировать.
+        const playPromise = bgAudio.play();
+        if (playPromise && playPromise.catch) playPromise.catch(function () {});
+
+        if (window.RoomEffects) window.RoomEffects.pauseMusic();
+        updateBgUi();
+    }
+
+    function resumeBgMusic() {
+        if (!bgTrack || !bgWanted) return;
+        const playPromise = bgAudio.play();
+        if (playPromise && playPromise.catch) playPromise.catch(function () {});
+        updateBgUi();
+    }
+
+    function pauseBgMusic() {
+        if (bgTrack) bgAudio.pause();
+        updateBgUi();
+    }
+
+    function stopBgMusic(keepSnapshot) {
+        // Перед выключением в рассказе сохраняем точную секунду для плеера.
+        if (keepSnapshot && bgTrack) {
+            saveBgSnapshot();
+            // Запоминаем состояние, чтобы вернуть тот же трек при выходе из комнаты.
+            stoppedSnapshot = {
+                src: bgTrack.src,
+                title: bgTrack.title,
+                artist: bgTrack.artist,
+                cover: bgTrack.cover,
+                time: bgAudio.currentTime || 0,
+                volume: bgAudio.volume,
+                playing: bgWanted
+            };
+        } else {
+            stoppedSnapshot = null;
+        }
+        bgTrack = null;
+        bgWanted = false;
+        bgPausedByHub = false;
+        lastMusicState = null;
+        pendingHandoff = null;
+        bgAudio.pause();
+        bgAudio.removeAttribute('src');
+        try { bgAudio.load(); } catch (err) { /* игнорируем */ }
+
+        // В рассказе/новеллах позиция нужна для возврата в плеер.
+        // А при явном выключении музыки трек больше не должен оживать.
+        if (!keepSnapshot) {
+            try {
+                localStorage.removeItem('playerSrc_minesweeper');
+                localStorage.removeItem('playerTime_minesweeper');
+                localStorage.removeItem('playerPlaying_minesweeper');
+            } catch (err) { /* игнорируем */ }
+        }
+        updateBgUi();
+    }
+
+    bgAudio.addEventListener('play', updateBgUi);
+    bgAudio.addEventListener('pause', updateBgUi);
+    // Трек доиграл — включаем следующий из плейлиста, а не останавливаемся.
+    bgAudio.addEventListener('ended', function () {
+        if (!bgPlaylist.length) {
+            updateBgUi();
+            return;
+        }
+        stepBgTrack(1);
+    });
+    bgAudio.addEventListener('timeupdate', function () {
+        const now = Date.now();
+        if (now - lastBgSave < 1000) return;
+        lastBgSave = now;
+        saveBgSnapshot();
+    });
+
+    if (bgToggleEl) {
+        bgToggleEl.addEventListener('click', function () {
+            if (bgAudio.paused) {
+                bgWanted = true;
+                bgPausedByHub = false;
+                resumeBgMusic();
+            } else {
+                bgWanted = false;
+                pauseBgMusic();
+            }
+        });
+    }
+
+    if (bgPrevEl) {
+        bgPrevEl.addEventListener('click', function () { stepBgTrack(-1); });
+    }
+
+    if (bgNextEl) {
+        bgNextEl.addEventListener('click', function () { stepBgTrack(1); });
+    }
+
+    if (bgStopEl) {
+        bgStopEl.addEventListener('click', function () { stopBgMusic(); });
     }
 
     function openGame(value, title, push) {
@@ -222,6 +469,28 @@ document.addEventListener('DOMContentLoaded', function () {
         if (hubLoader) hubLoader.classList.remove('is-hidden');
 
         pausePageEffects();
+
+        // Музыка из плеера в комнатах продолжает звучать фоном. Исключение —
+        // рассказ и новеллы: там она мешает читать, поэтому глушим совсем.
+        if (bgTrack) {
+            if (slug === 'book' || slug === 'novell') {
+                stopBgMusic(true);
+            } else if (slug === 'music') {
+                playerAudioStarted = false;
+                // Возвращаемся в плеер: отдаём ему трек с той же секунды.
+                pendingHandoff = {
+                    src: bgTrack.src,
+                    title: bgTrack.title,
+                    artist: bgTrack.artist,
+                    cover: bgTrack.cover,
+                    time: bgAudio.currentTime || 0,
+                    volume: bgAudio.volume,
+                    playing: bgWanted
+                };
+                bgPausedByHub = true;
+                pauseBgMusic();
+            }
+        }
 
         if (push !== false) {
             try {
@@ -257,8 +526,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function closeGame(fromPop) {
         if (!isHubOpen) return;
+
+        // Запоминаем состояние плеера ДО удаления iframe: музыка переедет в меню.
+        const closingSlug = currentSlug;
+        const handoff = closingSlug === 'music' &&
+            lastMusicState && lastMusicState.playing && lastMusicState.src
+            ? lastMusicState
+            : null;
+
         isHubOpen = false;
         currentSlug = null;
+        pendingHandoff = null;
+        playerAudioStarted = false;
         clearTimeout(loadFallbackTimer);
 
         hub.classList.remove('is-open');
@@ -270,6 +549,31 @@ document.addEventListener('DOMContentLoaded', function () {
             frame.src = 'about:blank';
         }
         if (hubLoader) hubLoader.classList.add('is-hidden');
+
+        // Возврат из рассказа/новелл: включаем обратно тот же трек с того же места.
+        const restoreSnapshot = stoppedSnapshot;
+        stoppedSnapshot = null;
+
+        if (handoff) {
+            startBgMusic(handoff);
+        } else if (restoreSnapshot) {
+            if (restoreSnapshot.playing) {
+                startBgMusic(restoreSnapshot);
+            } else {
+                bgTrack = {
+                    src: restoreSnapshot.src,
+                    title: restoreSnapshot.title,
+                    artist: restoreSnapshot.artist,
+                    cover: restoreSnapshot.cover
+                };
+                bgWanted = false;
+                bgAudio.volume = Math.max(0, Math.min(1, restoreSnapshot.volume));
+                updateBgUi();
+            }
+        } else if (bgTrack && bgWanted && bgPausedByHub) {
+            bgPausedByHub = false;
+            resumeBgMusic();
+        }
 
         resumePageEffects();
 
@@ -321,9 +625,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     const style = doc.createElement('style');
                     style.id = 're-embed-style';
                     style.textContent =
-                        'a[href*="index.html"],[onclick*="index.html"],a[href$="../"],a[href$=".."]{display:none!important}' +
-                        'body{padding-bottom:env(safe-area-inset-bottom);}';
+                        'a[href*="index.html"],[onclick*="index.html"],a[href$="../"],a[href$=".."]{display:none!important}';
                     (doc.head || doc.documentElement).appendChild(style);
+
+                    // Нижний safe-area добавляем только комнатам без своего отступа:
+                    // иначе правило затирало padding комнаты и текст уезжал под меню.
+                    const bodyPad = parseFloat(doc.defaultView.getComputedStyle(doc.body).paddingBottom) || 0;
+                    if (bodyPad === 0) {
+                        doc.body.style.paddingBottom = 'env(safe-area-inset-bottom)';
+                    }
                 }
             } catch (err) { /* документ ещё не готов */ }
         });
@@ -334,8 +644,52 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     window.addEventListener('message', function (event) {
-        if (event.data && event.data.type === 'room-effects:close-game' && isHubOpen) {
+        const data = event.data;
+        if (!data) return;
+        if (data.type === 'room-effects:close-game' && isHubOpen) {
             closeGame();
+            return;
+        }
+        if (data.type === 'music:request-state' && isHubOpen && currentSlug === 'music') {
+            // Плеер при открытии спрашивает, что играло в мини-плеере.
+            const state = pendingHandoff || (bgTrack ? {
+                src: bgTrack.src,
+                title: bgTrack.title,
+                artist: bgTrack.artist,
+                cover: bgTrack.cover,
+                time: bgAudio.currentTime || 0,
+                volume: bgAudio.volume,
+                playing: bgWanted
+            } : null);
+            if (state && frame && frame.contentWindow) {
+                frame.contentWindow.postMessage({ type: 'music:restore', state: state }, '*');
+            }
+            return;
+        }
+        if (data.type === 'music:state') {
+            lastMusicState = data;
+            if (currentSlug === 'music') {
+                // Держим мини-плеер в согласии с плеером: пауза/плей и трек.
+                // false до первого play — это ещё не пауза, а незапущенный трек.
+                if (data.playing) {
+                    playerAudioStarted = true;
+                    bgWanted = true;
+                } else if (playerAudioStarted) {
+                    bgWanted = false;
+                }
+                if (bgTrack) {
+                    bgTrack.title = data.title || bgTrack.title;
+                    bgTrack.artist = data.artist || bgTrack.artist;
+                    bgTrack.cover = data.cover || bgTrack.cover;
+                } else if (data.src) {
+                    bgTrack = {
+                        src: data.src,
+                        title: data.title || 'Музыка',
+                        artist: data.artist || '',
+                        cover: data.cover || ''
+                    };
+                }
+            }
         }
     });
 

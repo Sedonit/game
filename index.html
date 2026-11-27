@@ -360,7 +360,15 @@
     <section id="profile" class="section">
         <div class="section-content">
             <h1><img src="assets/images/main/2.png" alt="Фото 2" class="section-icon"> Лиза</h1>
-            <p class="section-info">Пока здесь только тестовая версия. Остаётся представить, что ты тут главный специалист в очках и с налётом кошачьей уверенности. <a href="#game=room" class="clickable-text"> Ну что, посмотришь на себя?</a>🙃</p>
+            <p class="section-info">Пока здесь только тестовая версия. Остаётся представить, что ты тут главный специалист в очках и с налётом кошачьей уверенности.</p>
+            <a href="#game=room" class="profile-cta" data-game="room" data-title="Комната">
+                <span class="profile-cta__icon" aria-hidden="true"><img src="assets/images/main/37.png" alt="" width="28" height="28" decoding="async"></span>
+                <span class="profile-cta__text">
+                    <span class="profile-cta__label">Ну что, посмотришь на себя?</span>
+                    <span class="profile-cta__hint">загляни в комнату 🙃</span>
+                </span>
+                <span class="profile-cta__arrow" aria-hidden="true">→</span>
+            </a>
         </div>
     </section>
     <section id="settings" class="section">
@@ -389,6 +397,18 @@
             <iframe class="game-hub__frame" id="gameFrame" title="Игра" loading="lazy" allow="autoplay; fullscreen; clipboard-write"></iframe>
         </div>
     </div>
+    <!-- Мини-плеер: музыка из плеера продолжает играть в меню -->
+    <div class="bg-player" id="bgPlayer" hidden>
+        <img class="bg-player__cover" id="bgCover" alt="" width="38" height="38" decoding="async">
+        <div class="bg-player__meta">
+            <span class="bg-player__title" id="bgTitle">Музыка</span>
+            <span class="bg-player__artist" id="bgArtist"></span>
+        </div>
+        <button type="button" class="bg-player__btn bg-player__btn--step" id="bgPrev" aria-label="Предыдущий трек">⏮</button>
+        <button type="button" class="bg-player__btn" id="bgToggle" aria-label="Пауза">⏸</button>
+        <button type="button" class="bg-player__btn bg-player__btn--step" id="bgNext" aria-label="Следующий трек">⏭</button>
+        <button type="button" class="bg-player__btn bg-player__btn--close" id="bgStop" aria-label="Выключить музыку">✕</button>
+    </div>
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
@@ -397,6 +417,7 @@
             </div>
         </div>
     </footer>
+    <script src="js/music-playlist.js"></script>
     <script src="js/main.js"></script>
     <script>
         // === Скрипт самурая ===

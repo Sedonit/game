@@ -255,25 +255,50 @@
         }
     }
 
-    function startAudioOnGesture() {
-        if (audioStarted) return;
-        audioStarted = true;
-        tryPlay();
+    // Запускаем музыку и сообщаем onStarted только при реальном старте:
+    // если браузер отклонил play(), остаёмся в ожидании следующего жеста.
+    function startAudio(onStarted) {
+        if (audioStarted || !CONFIG.music || hasOwnMusic || muted) return;
+
+        var player = createAudio();
+        shouldPlay = true;
+        var p = player.play();
+
+        var started = function () {
+            audioStarted = true;
+            if (onStarted) onStarted();
+        };
+
+        if (p && p.then) {
+            p.then(started).catch(function () { /* ждём следующий жест */ });
+        } else {
+            started();
+        }
     }
 
     function initMusic() {
         if (!CONFIG.music || hasOwnMusic) return;
 
         var events = ['pointerdown', 'touchstart', 'keydown', 'click'];
-        var unlock = function () {
+        var detach = function () {
             events.forEach(function (evt) {
                 document.removeEventListener(evt, unlock, true);
             });
-            startAudioOnGesture();
+        };
+        var unlock = function () {
+            if (audioStarted) {
+                detach();
+                return;
+            }
+            startAudio(detach);
         };
         events.forEach(function (evt) {
             document.addEventListener(evt, unlock, true);
         });
+
+        // Пробуем запустить сразу: сработает там, где автоплей разрешён.
+        // Если браузер запретил — музыку включит первый же жест в любом месте.
+        startAudio(detach);
 
         document.addEventListener('visibilitychange', function () {
             if (!audio) return;
